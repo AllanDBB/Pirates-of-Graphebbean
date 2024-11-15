@@ -7,12 +7,15 @@ package com.mycompany.pirates.of.graphebbean;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.List;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -33,7 +36,17 @@ public class PlayerScreen extends javax.swing.JFrame {
     
     public int currentSelectedVictim; //esto aquí con player, depende de la lógica 
     private final ArrayList<Point> selectedCells = new ArrayList<>();
+    private GetRelativePath imageGetter= new GetRelativePath();
     
+    GetRelativePath pathHelper = new GetRelativePath();
+
+
+    ImageIcon iconoBarco = pathHelper.buscarImagenComoIcono("barquito.png");
+
+        
+        
+        
+
 
     /**
      * Creates new form PlayerScreen
@@ -72,10 +85,10 @@ public class PlayerScreen extends javax.swing.JFrame {
         return matrix;
     }
     
-    public void configureMySea(int[][] matrix) { // Que reciba una matriz
+    public void configureMySea(int[][] matrix) {
     jPanel2.removeAll();
 
-    // Asegurar que la matriz tiene 20x20 elementos
+    // Verificar que la matriz sea de 20x20
     if (matrix.length != 20 || matrix[0].length != 20) {
         throw new IllegalArgumentException("La matriz debe ser de 20x20.");
     }
@@ -86,28 +99,33 @@ public class PlayerScreen extends javax.swing.JFrame {
             JPanel cell = new JPanel();
             int value = matrix[i][j];
 
-            // Crear un JLabel para mostrar la imagen si es necesario
-           
+            // Crear un JLabel para la imagen
+            JLabel label = new JLabel();
+            label.setOpaque(true); // Para que se vea el fondo
 
             // Asignar color o imagen basado en el valor de la celda
             switch (value) {
                 case 1:
+                    label.setBackground(Color.GREEN);
                     
-                    cell.setBackground(Color.GREEN);// Agregar el JLabel con la imagen al panel
+                    Image scaledImage = iconoBarco.getImage().getScaledInstance(13, 13, Image.SCALE_SMOOTH);
+                    label.setIcon(new ImageIcon(scaledImage));
                     break;
                 case 2:
-                    cell.setBackground(Color.RED);
+                    label.setBackground(Color.RED);
                     break;
                 case 0:
-                    cell.setBackground(Color.BLUE);
+                    label.setBackground(Color.BLUE);
                     break;
-                // Puedes agregar más casos según los valores de la matriz
                 default:
-                    cell.setBackground(Color.GRAY); // Color predeterminado
+                    label.setBackground(Color.GRAY);
                     break;
             }
 
+            cell.setLayout(new BorderLayout()); // Para centrar el JLabel
+            cell.add(label, BorderLayout.CENTER);
             cell.setBorder(BorderFactory.createLineBorder(Color.BLACK)); // Borde opcional
+
             jPanel2.add(cell);
         }
     }
@@ -115,6 +133,7 @@ public class PlayerScreen extends javax.swing.JFrame {
     jPanel2.revalidate(); // Actualizar el panel después de modificarlo
     jPanel2.repaint();
 }
+
 
     
     public void inicialSea() {
@@ -250,6 +269,7 @@ public class PlayerScreen extends javax.swing.JFrame {
         btnShowPlayer2 = new javax.swing.JButton();
         btnShowPlayer3 = new javax.swing.JButton();
         btnShowPlayer4 = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -277,7 +297,7 @@ public class PlayerScreen extends javax.swing.JFrame {
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 217, Short.MAX_VALUE)
+            .addGap(0, 258, Short.MAX_VALUE)
         );
 
         jLabel2.setFont(new java.awt.Font("Segoe UI Historic", 3, 18)); // NOI18N
@@ -374,7 +394,9 @@ public class PlayerScreen extends javax.swing.JFrame {
                             .addComponent(btnShowPlayer2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnShowPlayer4, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(btnShowPlayer3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(141, 141, 141)
+                        .addGap(35, 35, 35)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
@@ -389,17 +411,21 @@ public class PlayerScreen extends javax.swing.JFrame {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGap(6, 6, 6)
-                        .addComponent(btnShowPlayer2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnShowPlayer3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(btnShowPlayer2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnShowPlayer3))
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnShowPlayer4))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGap(47, 47, 47)
                         .addComponent(jLabel2)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 96, Short.MAX_VALUE)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnMultiAttack)
@@ -411,6 +437,27 @@ public class PlayerScreen extends javax.swing.JFrame {
                 .addGap(14, 14, 14))
         );
 
+        GetRelativePath pathHelper = new GetRelativePath();
+
+        // Agregar un ComponentListener al JLabel
+        jLabel3.addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentResized(java.awt.event.ComponentEvent e) {
+                // Obtener el ícono original
+                ImageIcon iconoOriginal = pathHelper.buscarImagenComoIcono("pirate.png");
+
+                // Redimensionar la imagen al tamaño del JLabel
+                Image imagenEscalada = iconoOriginal.getImage().getScaledInstance(
+                    jLabel3.getWidth(),
+                    jLabel3.getHeight(),
+                    Image.SCALE_SMOOTH
+                );
+
+                // Asignar el ícono redimensionado al JLabel
+                jLabel3.setIcon(new ImageIcon(imagenEscalada));
+            }
+        });
+
         jPanel2.setBackground(new java.awt.Color(204, 204, 255));
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 153), 2));
         jPanel2.setForeground(new java.awt.Color(51, 0, 255));
@@ -419,11 +466,11 @@ public class PlayerScreen extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 285, Short.MAX_VALUE)
+            .addGap(0, 300, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 278, Short.MAX_VALUE)
+            .addGap(0, 298, Short.MAX_VALUE)
         );
 
         jLabel1.setFont(new java.awt.Font("Segoe UI Historic", 3, 18)); // NOI18N
@@ -453,13 +500,10 @@ public class PlayerScreen extends javax.swing.JFrame {
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(jPanel5Layout.createSequentialGroup()
-                                    .addGap(21, 21, 21)
-                                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(jPanel5Layout.createSequentialGroup()
-                                    .addGap(127, 127, 127)
-                                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addGap(127, 127, 127)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(106, 106, 106)))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addContainerGap()
@@ -467,6 +511,10 @@ public class PlayerScreen extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButtonSendMessage)))
                 .addContainerGap())
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -475,8 +523,8 @@ public class PlayerScreen extends javax.swing.JFrame {
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButtonSendMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -509,7 +557,7 @@ public class PlayerScreen extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 146, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -629,6 +677,7 @@ public class PlayerScreen extends javax.swing.JFrame {
     private javax.swing.JButton jButtonSendMessage;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
