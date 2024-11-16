@@ -30,7 +30,7 @@ public class PlayerScreen extends javax.swing.JFrame {
     public int [][] matrix2;
     public int [][] matrix3;
     public int [][] matrix4;
-    public boolean myTurn=false;
+    public boolean myTurn=true;
     private int selectedRow = -1;
     private int selectedColumn = -1;
     
@@ -42,11 +42,10 @@ public class PlayerScreen extends javax.swing.JFrame {
 
 
     ImageIcon iconoBarco = pathHelper.buscarImagenComoIcono("barquito.png");
-
-        
-        
-        
-
+    ImageIcon iconoMercado = pathHelper.buscarImagenComoIcono("mercado.png");
+    ImageIcon iconoConector = pathHelper.buscarImagenComoIcono("conector.png");
+    ImageIcon iconoRemolino = pathHelper.buscarImagenComoIcono("remolino.png");
+    ImageIcon iconoMina = pathHelper.buscarImagenComoIcono("mina.png");
 
     /**
      * Creates new form PlayerScreen
@@ -79,7 +78,7 @@ public class PlayerScreen extends javax.swing.JFrame {
         int[][] matrix = new int[20][20];
         for (int i = 0; i < 20; i++) {
             for (int j = 0; j < 20; j++) {
-                matrix[i][j] = (int) (Math.random() * 3); // Valores aleatorios: 0, 1, o 2
+                matrix[i][j] = (int) (Math.random() * 10); // Valores aleatorios: 0, 1, o 2
             }
         }
         return matrix;
@@ -102,17 +101,53 @@ public class PlayerScreen extends javax.swing.JFrame {
             // Crear un JLabel para la imagen
             JLabel label = new JLabel();
             label.setOpaque(true); // Para que se vea el fondo
-
+            int t1=16;
+            int t2=16;
             // Asignar color o imagen basado en el valor de la celda
             switch (value) {
                 case 1:
                     label.setBackground(Color.GREEN);
                     
-                    Image scaledImage = iconoBarco.getImage().getScaledInstance(13, 13, Image.SCALE_SMOOTH);
+                    Image scaledImage = iconoBarco.getImage().getScaledInstance(t1, t2, Image.SCALE_SMOOTH);
                     label.setIcon(new ImageIcon(scaledImage));
                     break;
                 case 2:
                     label.setBackground(Color.RED);
+                    Image scaledImage2 = iconoMercado.getImage().getScaledInstance(t1, t2, Image.SCALE_SMOOTH);
+                    label.setIcon(new ImageIcon(scaledImage2));
+                    break;
+                case 3:
+                    label.setBackground(Color.darkGray);
+                    Image scaledImage3= iconoConector.getImage().getScaledInstance(t1,t2, Image.SCALE_SMOOTH);
+                    label.setIcon(new ImageIcon(scaledImage3));
+                    
+                    break;
+                case 4:
+                    label.setBackground(Color.YELLOW);
+                    Image scaledImage4= iconoRemolino.getImage().getScaledInstance(t1, t2, Image.SCALE_SMOOTH);
+                    label.setIcon(new ImageIcon(scaledImage4));
+                    break;
+                case 5:
+                    label.setBackground(Color.PINK);
+                    
+                    break;
+                case 6:
+                    label.setBackground(Color.RED);
+                    Image scaledImage5= iconoMina.getImage().getScaledInstance(t1, t2, Image.SCALE_SMOOTH);
+                    label.setIcon(new ImageIcon(scaledImage5));
+                    
+                    break;
+                case 7:
+                    label.setBackground(Color.orange);
+                    
+                    break;
+                case 8:
+                    label.setBackground(Color.white);
+                    
+                    break;
+                case 9:
+                    label.setBackground(Color.MAGENTA);
+                    
                     break;
                 case 0:
                     label.setBackground(Color.BLUE);
