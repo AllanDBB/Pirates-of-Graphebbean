@@ -46,6 +46,9 @@ public class PlayerScreen extends javax.swing.JFrame {
     ImageIcon iconoConector = pathHelper.buscarImagenComoIcono("conector.png");
     ImageIcon iconoRemolino = pathHelper.buscarImagenComoIcono("remolino.png");
     ImageIcon iconoMina = pathHelper.buscarImagenComoIcono("mina.png");
+    ImageIcon iconoFabrica = pathHelper.buscarImagenComoIcono("fabrica.png");
+    ImageIcon iconoFuego = pathHelper.buscarImagenComoIcono("fuego.png");
+    ImageIcon iconoBruja= pathHelper.buscarImagenComoIcono("bruja.png");
 
     /**
      * Creates new form PlayerScreen
@@ -129,24 +132,30 @@ public class PlayerScreen extends javax.swing.JFrame {
                     break;
                 case 5:
                     label.setBackground(Color.PINK);
-                    
+                    Image scaledImage5= iconoBruja.getImage().getScaledInstance(t1, t2, Image.SCALE_SMOOTH);
+                    label.setIcon(new ImageIcon(scaledImage5));
                     break;
                 case 6:
                     label.setBackground(Color.RED);
-                    Image scaledImage5= iconoMina.getImage().getScaledInstance(t1, t2, Image.SCALE_SMOOTH);
-                    label.setIcon(new ImageIcon(scaledImage5));
+                    Image scaledImage6= iconoMina.getImage().getScaledInstance(t1, t2, Image.SCALE_SMOOTH);
+                    label.setIcon(new ImageIcon(scaledImage6));
                     
                     break;
                 case 7:
                     label.setBackground(Color.orange);
+                    Image scaledImage7= iconoFuego.getImage().getScaledInstance(t1, t2, Image.SCALE_SMOOTH);
+                    label.setIcon(new ImageIcon(scaledImage7));
                     
                     break;
                 case 8:
                     label.setBackground(Color.white);
+                    Image scaledImage8= iconoFabrica.getImage().getScaledInstance(t1, t2, Image.SCALE_SMOOTH);
+                    label.setIcon(new ImageIcon(scaledImage8));
                     
                     break;
                 case 9:
                     label.setBackground(Color.MAGENTA);
+                    
                     
                     break;
                 case 0:
