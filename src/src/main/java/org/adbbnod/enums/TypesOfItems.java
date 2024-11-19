@@ -1,4 +1,4 @@
-package org.adbbnod;
+package org.adbbnod.enums;
 
 public enum TypesOfItems {
     ENERGYSOURCE,
@@ -7,6 +7,5 @@ public enum TypesOfItems {
     MINE,
     WITCHTEMPLE,
     ARMORY,
-    IRON,
     SHIP,
 }

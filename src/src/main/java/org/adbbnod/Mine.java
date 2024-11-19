@@ -18,7 +18,7 @@ public class Mine extends Component{
 
 
     public int mine (){
-        return quantity;
+        return quantity; //alternativamente void con un set del get + quantity
     }
 
     public int getTime() {

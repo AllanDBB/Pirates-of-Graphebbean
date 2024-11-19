@@ -1,8 +1,6 @@
 package org.adbbnod;
 
-import jdk.internal.net.http.common.Pair;
-
-import java.util.ArrayList;
+import org.adbbnod.enums.TypesOfItems;
 
 public class Market extends Component{
 

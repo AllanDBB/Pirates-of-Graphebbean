@@ -34,8 +34,6 @@ public abstract class Component extends Item{
     }
 
 
-
-
     public ArrayList<Component> getConnections() {
         return connections;
     }

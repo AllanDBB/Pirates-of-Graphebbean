@@ -11,5 +11,4 @@ public abstract class Weapon {
         this.iron = iron;
     }
 
-    //TODO: fire weapons
 }
