@@ -34,24 +34,36 @@ public class Market extends Component{
 
         if (item == TypesOfItems.ENERGYSOURCE && buyer.getMoney() >= 12000){
             buyer.setMoney(buyer.getMoney() - 12000);
-            return new EnergySource();
+            EnergySource e = new EnergySource();
+            buyer.getComponents().add(e);
+            return e;
         } else if (item == TypesOfItems.CONNECTOR && buyer.getMoney() >= 100){
             buyer.setMoney(buyer.getMoney() - 100);
-            return new Connector();
+            Connector c = new Connector();
+            buyer.getComponents().add(c);
+            return c;
         } else if (item == TypesOfItems.MARKET && buyer.getMoney() >= 2000) {
             buyer.setMoney(buyer.getMoney() - 2000);
-            return new Market();
+            Market m = new Market();
+            buyer.getComponents().add(m);
+            return m;
         } else if (item == TypesOfItems.MINE && buyer.getMoney() >= 1000) {
             buyer.setMoney(buyer.getMoney() - 1000);
-            return new Mine();
+            Mine m = new Mine();
+            buyer.getComponents().add(m);
+            return m;
         } else if (item == TypesOfItems.WITCHTEMPLE && buyer.getMoney() >= 2500) {
             buyer.setMoney(buyer.getMoney() - 2500);
-            return new WitchTemple();
+            WitchTemple w = new WitchTemple();
+            buyer.getComponents().add(w);
+            return w;
         } else if (item == TypesOfItems.ARMORY && buyer.getMoney() >= 1500){
             buyer.setMoney(buyer.getMoney() - 1500);
-            return new Armory();
+            Armory a = new Armory();
+            buyer.getComponents().add(a);
+            return a;
         } else if (item == TypesOfItems.SHIP){
-            buyer.setMoney(buyer.getMoney() - 2500);
+            buyer.setMoney(buyer.getMoney() - 2500); //este no anade a components porque no es un componente, no va en el grafo
             return new Ship();
         } else {
             return null;

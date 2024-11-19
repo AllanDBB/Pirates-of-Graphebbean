@@ -13,14 +13,14 @@ public class Player {
     private int money;
     private int iron;
     private ArrayList<Weapon> weapons;
-    //private ArrayList<Component> components;
+    private ArrayList<Component> components;
     private Item[][] seaGrid;
     private Graph graph;
     private Shield[][] shields;
 
     Player (){
         this.money = 4000;
-        //this.components = new ArrayList<>();
+        this.components = new ArrayList<>();
         this.iron = 0;
         this.seaGrid = new Component[20][20];
         this.weapons = new ArrayList<>();
@@ -44,7 +44,9 @@ public class Player {
         this.money = money;
     }
 
-
+    public ArrayList<Component> getComponents() {
+        return components;
+    }
 
     public int getIron() {
         return iron;
@@ -125,7 +127,7 @@ public class Player {
     private void processTarget(Item target, Player enemy, int x, int y) {
 
         if (enemy.shields[x][y]!=null){
-            if (enemy.shields[x][y].shotsLeft <= 0){
+            if (enemy.shields[x][y].shotsLeft <= 1){
                 enemy.shields[x][y] = null;
             }
             else{
@@ -203,7 +205,7 @@ public class Player {
             Item target = enemy.seaGrid[x][y];
 
             if (enemy.shields[x][y]!=null){
-                if (enemy.shields[x][y].shotsLeft <= 0){
+                if (enemy.shields[x][y].shotsLeft <= 1){
                     enemy.shields[x][y] = null;
                 }
                 else{
@@ -234,7 +236,7 @@ public class Player {
                 Item component =  enemy.seaGrid[x][y];
 
                 if (enemy.shields[x][y]!=null){
-                    if (enemy.shields[x][y].shotsLeft <= 0){
+                    if (enemy.shields[x][y].shotsLeft <= 1){
                         enemy.shields[x][y] = null;
                     }
                     else{
