@@ -1,9 +1,8 @@
-package org.adbbnod;
+package org.abno.logic.components;
 
 import jdk.internal.net.http.common.Pair;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class WitchTemple extends Component{
     int time;

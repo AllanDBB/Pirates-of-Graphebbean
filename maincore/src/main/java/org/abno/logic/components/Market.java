@@ -1,6 +1,6 @@
-package org.adbbnod;
+package org.abno.logic.components;
 
-import org.adbbnod.enums.TypesOfItems;
+import org.abno.logic.enums.TypesOfItems;
 
 public class Market extends Component{
 

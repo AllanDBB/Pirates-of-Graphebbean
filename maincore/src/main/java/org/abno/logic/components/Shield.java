@@ -1,4 +1,4 @@
-package org.adbbnod;
+package org.abno.logic.components;
 
 public class Shield extends Item{
 

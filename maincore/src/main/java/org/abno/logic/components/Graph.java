@@ -1,4 +1,4 @@
-package org.adbbnod;
+package org.abno.logic.components;
 
 import java.util.ArrayList;
 import java.util.HashSet;

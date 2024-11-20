@@ -1,9 +1,9 @@
-package org.adbbnod;
+package org.abno.logic.components;
 
 import jdk.internal.net.http.common.Pair;
-import org.adbbnod.weapons.Bomb;
-import org.adbbnod.weapons.Canon;
-import org.adbbnod.weapons.SuperCanon;
+import org.abno.logic.weapons.Bomb;
+import org.abno.logic.weapons.Canon;
+import org.abno.logic.weapons.SuperCanon;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ public class Player {
     private Graph graph;
     private Shield[][] shields;
 
-    Player (){
+    public Player(){
         this.money = 4000;
         this.components = new ArrayList<>();
         this.iron = 0;

@@ -1,10 +1,10 @@
-package org.adbbnod;
+package org.abno.logic.components;
 
-import org.adbbnod.enums.TypesOfWeapons;
-import org.adbbnod.weapons.Bomb;
-import org.adbbnod.weapons.Canon;
-import org.adbbnod.weapons.SuperCanon;
-import org.adbbnod.weapons.UltraCanon;
+import org.abno.logic.enums.TypesOfWeapons;
+import org.abno.logic.weapons.Bomb;
+import org.abno.logic.weapons.Canon;
+import org.abno.logic.weapons.SuperCanon;
+import org.abno.logic.weapons.UltraCanon;
 
 public class Armory extends Component{
 

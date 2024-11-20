@@ -1,4 +1,4 @@
-package org.adbbnod.enums;
+package org.abno.logic.enums;
 
 public enum TypesOfWeapons {
     CANON,

@@ -9,15 +9,20 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import org.abno.logic.components.Connector;
+import org.abno.logic.components.EnergySource;
+import org.abno.logic.components.Market;
+import org.abno.logic.components.Player;
+
 public class Client {
 
     private static final String SERVER_ADDRESS = "localhost";
-    private static final int SERVER_PORT = 8060; // Cambia esto si el servidor tiene un puerto diferente
+    private static final int SERVER_PORT = 8060;
     private static PrintWriter out;
 
     private static ChatPanel chat;
-
     private static InitFrame frame;
+    private static Player player;
 
     public static void send(String message){
         if (out != null){
@@ -32,9 +37,18 @@ public class Client {
         chat.sendMessage(message);
     }
 
-    public static void getChat(){
+    public static void initPlayer(){
         chat = frame.getChat();
         System.out.println(chat);
+
+        // Create a Player instance
+        player = new Player();
+        player.getComponents().add(new Market());
+        player.getComponents().add(new EnergySource());
+        player.getComponents().add(new Connector());
+
+        player.getSeaGrid()
+
     }
 
     public static void main(String[] args) {
@@ -47,7 +61,6 @@ public class Client {
 
             frame = new InitFrame();
             frame.Init();
-
 
 
             // Hilo para escuchar respuestas del servidor
@@ -63,7 +76,7 @@ public class Client {
 
                         if (response.equals("get chat")){
                             Thread.sleep(1000);
-                            getChat();
+                            initPlayer();
                         }
                     }
                 } catch (IOException e) {

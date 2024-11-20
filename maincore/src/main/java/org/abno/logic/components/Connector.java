@@ -1,8 +1,4 @@
-package org.adbbnod;
-
-import jdk.internal.net.http.common.Pair;
-
-import java.util.ArrayList;
+package org.abno.logic.components;
 
 public class Connector extends Component{
 

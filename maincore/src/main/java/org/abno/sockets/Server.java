@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+
+import org.abno.logic.components.Player;
+
 public class Server {
 
 
@@ -42,6 +45,10 @@ class ClientHandler implements Runnable {
     private BufferedReader in;
     private String username;
     private List<ClientHandler> clients;
+
+
+    // Game constants
+    private List<Player> players;
 
     public ClientHandler(Socket socket, List<ClientHandler> clients) {
         this.socket = socket;
@@ -103,4 +110,11 @@ class ClientHandler implements Runnable {
             }
         }
     }
+
+    // here starts the game logic:
+
+    private void startGame(){
+
+    }
 }
+
