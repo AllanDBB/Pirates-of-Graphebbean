@@ -4,7 +4,7 @@ import org.abno.logic.enums.TypesOfItems;
 
 public class Market extends Component{
 
-    Market(){
+    public Market(){
         super();
         this.setPrice(2000);
     }

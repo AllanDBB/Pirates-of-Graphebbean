@@ -45,7 +45,7 @@ class ClientHandler implements Runnable {
     private BufferedReader in;
     private String username;
     private List<ClientHandler> clients;
-
+    private boolean isReady;
 
     // Game constants
     private List<Player> players;
@@ -67,8 +67,6 @@ class ClientHandler implements Runnable {
                 username = "Anonymous";
             }
 
-            out.println("get chat");
-
             out.println(username + " has joined to the game.");
             String message;
             while ((message = in.readLine()) != null) {
@@ -77,7 +75,7 @@ class ClientHandler implements Runnable {
                     break;
                 }
 
-                broadcast(username + ": " + message);
+                processMessage(username, message);
             }
         } catch (IOException e) {
             System.err.println("Error handling client: " + e.getMessage());
@@ -87,10 +85,39 @@ class ClientHandler implements Runnable {
     }
 
 
-    private void processMessage(){
+    private void processMessage(String username, String message){
 
+        if (message.startsWith("@")){
+            if (message.equalsIgnoreCase("@Ready")) {
+                setReady();
+                out.println("You are ready!");
+            }
+        } else {
+            broadcast(username + ": " + message);
+        }
     }
 
+    private void setReady(){
+        isReady = true;
+        broadcast(username + (isReady ? " is ready!" : " is not ready."));
+        checkReadyPlayers();
+    }
+
+    private void checkReadyPlayers() {
+        long readyCount = clients.stream().filter(client -> client.isReady).count();
+        if (readyCount >= 2) {
+            startGame();
+
+            enableChatForPlayers();
+
+        }
+    }
+
+    private void enableChatForPlayers(){
+        for (ClientHandler client : clients){
+            client.out.println("@SetChat");
+        }
+    }
     private void disconnect() {
         try {
             socket.close();
@@ -111,10 +138,22 @@ class ClientHandler implements Runnable {
         }
     }
 
+    private void broadcastToAll(String message) {
+        synchronized (clients) {
+            for (ClientHandler client : clients) {
+                client.out.println(message);
+            }
+        }
+    }
+
     // here starts the game logic:
 
     private void startGame(){
-
+        synchronized (clients){
+            for (ClientHandler client : clients){
+                client.out.println("@StartGame");
+            }
+        }
     }
 }
 

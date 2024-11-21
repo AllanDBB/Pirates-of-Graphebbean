@@ -72,23 +72,26 @@ public class ChatPanel extends JPanel {
                 }
             }
         });
-
     }
 
     public void sendMessage(String message) {
-
-        if (message == null){
+        if (message == null) {
             message = chatInputField.getText().trim();
-            if (!message.isEmpty()) {
+            if (!message.isEmpty() && !message.startsWith("@")) {
                 chatArea.append("Tú: " + message + "\n");
                 chatInputField.setText("");
-
                 send(message);
-
+                // Autoscroll al final
+                chatArea.setCaretPosition(chatArea.getDocument().getLength());
+            } else if (message.startsWith("@")){
+                chatInputField.setText("");
+                send(message);
             }
         } else {
             chatArea.append(message + "\n");
             chatInputField.setText("");
+            // Autoscroll al final
+            chatArea.setCaretPosition(chatArea.getDocument().getLength());
         }
     }
 }

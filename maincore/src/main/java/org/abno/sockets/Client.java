@@ -38,17 +38,9 @@ public class Client {
     }
 
     public static void initPlayer(){
+        player = new Player();
         chat = frame.getChat();
         System.out.println(chat);
-
-        // Create a Player instance
-        player = new Player();
-        player.getComponents().add(new Market());
-        player.getComponents().add(new EnergySource());
-        player.getComponents().add(new Connector());
-
-        player.getSeaGrid()
-
     }
 
     public static void main(String[] args) {
@@ -74,10 +66,15 @@ public class Client {
                             sendToClient(response);
                         }
 
-                        if (response.equals("get chat")){
-                            Thread.sleep(1000);
+                        if (response.equals("@SetChat")){
+                            Thread.sleep(1);
                             initPlayer();
                         }
+
+                        if (response.equals("@StartGame")){
+                            frame.getLobbyFrame().startGame();
+                        }
+
                     }
                 } catch (IOException e) {
                     System.err.println("Conexión con el servidor cerrada.");

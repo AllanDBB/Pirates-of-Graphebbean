@@ -2,7 +2,7 @@ package org.abno.logic.components;
 
 public class Connector extends Component{
 
-    Connector (){
+    public Connector(){
         super();
         this.setPrice(100);
     }

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 public class Graph {
-    ArrayList<Component> nodes;
+    ArrayList<Component> nodes = new ArrayList<>();
 
 
     public void addNode(Component component) {

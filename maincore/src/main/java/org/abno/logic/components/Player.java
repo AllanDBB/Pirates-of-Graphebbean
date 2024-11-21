@@ -1,6 +1,5 @@
 package org.abno.logic.components;
 
-import jdk.internal.net.http.common.Pair;
 import org.abno.logic.weapons.Bomb;
 import org.abno.logic.weapons.Canon;
 import org.abno.logic.weapons.SuperCanon;
@@ -18,14 +17,47 @@ public class Player {
     private Graph graph;
     private Shield[][] shields;
 
-    public Player(){
+    public Player() {
         this.money = 4000;
         this.components = new ArrayList<>();
         this.iron = 0;
-        this.seaGrid = new Component[20][20];
+        this.seaGrid = new Item[20][20]; // Asegúrate de que Item esté definido
         this.weapons = new ArrayList<>();
         this.graph = new Graph();
         this.shields = new Shield[20][20];
+
+        Market market = new Market();
+        EnergySource energySource = new EnergySource();
+        Connector connector = new Connector();
+
+        components.add(market);
+        components.add(energySource);
+        components.add(connector);
+
+        market.addConnection(connector);
+        energySource.addConnection(connector);
+
+        connector.addConnection(market);
+        connector.addConnection(energySource);
+
+        ArrayList<Pair<Integer, Integer>> positionsEnergySource = new ArrayList<>();
+        positionsEnergySource.add(new Pair<>(5, 6));
+        positionsEnergySource.add(new Pair<>(5, 7));
+        positionsEnergySource.add(new Pair<>(4, 6));
+        positionsEnergySource.add(new Pair<>(4, 7));
+        placeComponent(energySource, positionsEnergySource);
+        energySource.setLocation(positionsEnergySource);
+
+        ArrayList<Pair<Integer, Integer>> positionsMarket = new ArrayList<>();
+        positionsMarket.add(new Pair<>(0, 1));
+        positionsMarket.add(new Pair<>(0, 2));
+        placeComponent(market, positionsMarket);
+        market.setLocation(positionsMarket);
+
+        ArrayList<Pair<Integer, Integer>> positionsConnector = new ArrayList<>();
+        positionsConnector.add(new Pair<>(4, 4));
+        placeComponent(connector, positionsConnector);
+        connector.setLocation(positionsConnector);
     }
 
     public Graph getGraph() {
@@ -60,7 +92,7 @@ public class Player {
         return weapons;
     }
 
-    public void placeComponent(Item component, List<Pair<Integer, Integer>> location) {
+    public void placeComponent(Item component, ArrayList<Pair<Integer, Integer>> location) {
         for (Pair<Integer, Integer> coord : location) {
             int x = coord.first;
             int y = coord.second;

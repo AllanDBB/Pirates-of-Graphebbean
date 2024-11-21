@@ -17,6 +17,9 @@ public class InitFrame extends JFrame {
     private static LobbyFrame lobbyFrame;
     private Image shipImage;
 
+    public LobbyFrame getLobbyFrame() {
+        return lobbyFrame;
+    }
     public InitFrame() {
         setTitle("Pirates Of Graphebbean");
         setSize(1366, 768);

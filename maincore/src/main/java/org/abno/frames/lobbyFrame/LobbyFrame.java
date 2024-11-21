@@ -95,7 +95,7 @@ public class LobbyFrame extends JFrame {
         readyButton.setFont(new Font("Arial", Font.BOLD, 16));
         readyButton.setBackground(new Color(70, 130, 180)); // Fondo del botón
         readyButton.setForeground(Color.WHITE); // Texto blanco
-        readyButton.setBorder(BorderFactory .createRaisedBevelBorder()); // Añadir borde elevado
+        readyButton.setBorder(BorderFactory.createRaisedBevelBorder()); // Añadir borde elevado
         readyButton.setFocusPainted(false); // Quitar el borde de enfoque
         readyButton.setContentAreaFilled(false); // Hacer que el área del botón sea transparente
         readyButton.setOpaque(true); // Hacer que el botón sea opaco
@@ -111,13 +111,16 @@ public class LobbyFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (readyCheckBox.isSelected()) {
-                    JOptionPane.showMessageDialog(LobbyFrame.this, "You are ready! ", "Status", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(LobbyFrame.this, "You are ready!", "Status", JOptionPane.INFORMATION_MESSAGE);
                     send(nameField.getText());
-                    gameFrame = new GameFrame();
-                    gameFrame.init();
-                    setVisible(false);
+                    send("@Ready");
+
+                    // Cambiar el color del botón para indicar que el jugador está listo
+                    readyButton.setBackground(new Color(0, 128, 0)); // Verde para indicar listo
+                    readyButton.setText("Ready!"); // Cambiar el texto del botón
+
                 } else {
-                    JOptionPane.showMessageDialog(LobbyFrame.this, "You need to be mark as ready.", "Status", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(LobbyFrame.this, "You need to be marked as ready.", "Status", JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
@@ -125,9 +128,16 @@ public class LobbyFrame extends JFrame {
         panel.add(readyButton, gbc);
     }
 
-    public static ChatPanel getChat(){
+    public void startGame() {
+        setVisible(false); // Ocultar el LobbyFrame
+        gameFrame = new GameFrame();
+        gameFrame.init();
+    }
+
+    public static ChatPanel getChat() {
         return gameFrame.getChat();
     }
+
     public static void init() {
         SwingUtilities.invokeLater(() -> {
             LobbyFrame lobbyFrame = new LobbyFrame();
