@@ -205,6 +205,7 @@ public class Player {
     }
 
     public void printSeaGrid() {
+        System.out.println("---------------------------------------");
         for (int i = 0; i < seaGrid.length; i++) {
             for (int j = 0; j < seaGrid[i].length; j++) {
                 Item item = seaGrid[i][j];

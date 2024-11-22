@@ -2,6 +2,9 @@ package org.abno.logic.components;
 
 import org.abno.logic.enums.TypesOfItems;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Market extends Component{
 
     public Market(){
@@ -11,7 +14,16 @@ public class Market extends Component{
 
     public void marketBuysComponent(Player seller, Component component){
         if (seller.getComponents().contains(component)){
+            for (Pair<Integer, Integer> coord : component.getLocation()) {
+                int x = coord.first;
+                int y = coord.second;
+                seller.getSeaGrid()[coord.first][coord.second] = null;
+            }
+
             seller.getComponents().remove(component);
+            seller.getGraph().removeNode(component);
+
+
             seller.setMoney(seller.getMoney() + (component.getPrice()/2));
         }
     }
@@ -69,17 +81,7 @@ public class Market extends Component{
             return null;
         }
     }
-
-    public void playerTransactionComponent(Player buyer, Player seller, Component component, int price){
-        if (seller.getComponents().contains(component) && buyer.getMoney() >= price){
-
-            seller.getComponents().remove(component);
-            seller.setMoney(seller.getMoney() + price);
-
-            buyer.getComponents().add(component);
-            buyer.setMoney(buyer.getMoney() - price);
-        }
-    }
+    
 
     public void playerTransactionIron(Player buyer, Player seller, int quantity, int price){
         if (seller.getIron() >= quantity && buyer.getMoney() >= price){

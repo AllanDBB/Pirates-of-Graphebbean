@@ -31,11 +31,12 @@ public class WitchTemple extends Component{
                     Component target = (Component) item;
 
                     enemy.getGraph().removeNode(target);
+                    enemy.getComponents().remove(target);
 
                     for (Pair<Integer, Integer> coord : target.getLocation()) {
                         int x = coord.first;
                         int y = coord.second;
-                        enemy.getSeaGrid()[x][y] = null;
+                        enemy.getSeaGrid()[coord.first][coord.second] = null;
                     }
 
                     return;
