@@ -144,9 +144,33 @@ class ClientHandler implements Runnable {
                 }
             } else if (message.equalsIgnoreCase("@MineProduce")) {
                 produceFromFirstMine(player);
-            }else if (message.equalsIgnoreCase("@WitchTempleRandom")) {
+            } else if (message.equalsIgnoreCase("@WitchTempleRandom")) {
                 try {
                     activateWitchTemple(player);
+                } catch (IOException e) {
+                    out.println("An error occurred while processing your request. Please try again.");
+                }
+            } else if (message.equalsIgnoreCase("@SellComponentToMarket")) {
+                try {
+                    sellComponentToMarket(player);
+                } catch (IOException e) {
+                    out.println("An error occurred while processing your request. Please try again.");
+                }
+            } else if (message.equalsIgnoreCase("@SellIronToMarket")) {
+                try {
+                    sellIronToMarket(player);
+                } catch (IOException e) {
+                    out.println("An error occurred while processing your request. Please try again.");
+                }
+            } else if (message.equalsIgnoreCase("@SellWeaponToMarket")) {
+                try {
+                    sellWeaponToMarket(player);
+                } catch (IOException e) {
+                    out.println("An error occurred while processing your request. Please try again.");
+                }
+            } else if (message.equalsIgnoreCase("@BuyIronFromPlayer")) {
+                try {
+                    initiateIronTrade(player);
                 } catch (IOException e) {
                     out.println("An error occurred while processing your request. Please try again.");
                 }
@@ -754,6 +778,190 @@ class ClientHandler implements Runnable {
         }
 
         out.println("No WitchTemple found.");
+    }
+
+    private void sellComponentToMarket(Player currentPlayer) throws IOException {
+        boolean hasMarket = false;
+        Market market = null;
+        for (Component component : currentPlayer.getComponents()) {
+            if (component instanceof Market) {
+                hasMarket = true;
+                market = (Market) component;
+                break;
+            }
+        }
+
+        if (!hasMarket) {
+            out.println("You must have a Market to sell components.");
+            return;
+        }
+
+        List<Component> componentsToSell = new ArrayList<>();
+        componentsToSell.addAll(currentPlayer.getComponents());
+
+        if (componentsToSell.isEmpty()) {
+            out.println("You don't have any components to sell.");
+            return;
+        }
+
+
+        out.println("Available components to sell:");
+        for (int i = 0; i < componentsToSell.size(); i++) {
+            Component component = componentsToSell.get(i);
+            out.println((i + 1) + ". " + component.getClass().getSimpleName() + " - Price: " + component.getPrice()/2);
+        }
+
+        out.println("Enter the number of the component you want to sell:");
+
+        try {
+            String input = in.readLine();
+            int choice = Integer.parseInt(input) - 1;
+
+            if (choice >= 0 && choice < componentsToSell.size()) {
+                Component selectedComponent = componentsToSell.get(choice);
+                market.marketBuysComponent(currentPlayer, selectedComponent);
+                out.println("You have successfully sold the " + selectedComponent.getClass().getSimpleName() + "!");
+            } else {
+                out.println("Invalid choice. No component was sold.");
+            }
+        } catch (NumberFormatException e) {
+            out.println("Invalid input. Please enter a valid number.");
+        }
+    }
+
+    private void sellIronToMarket(Player currentPlayer) throws IOException {
+        boolean hasMarket = false;
+        Market m = null;
+
+        for (Component component : currentPlayer.getComponents()) {
+            if (component instanceof Market) {
+                hasMarket = true;
+                m = (Market) component;
+                break;
+            }
+        }
+
+
+        if (!hasMarket) {
+            out.println("You must have a Market to sell iron.");
+            return;
+        }
+
+
+        out.println("Enter the quantity of iron you want to sell:");
+
+        String input = in.readLine();
+        try {
+            int quantity = Integer.parseInt(input);
+
+            if (quantity <= 0) {
+                out.println("Quantity must be greater than zero.");
+                return;
+            }
+
+
+            if (currentPlayer.getIron() >= quantity) {
+                m.marketBuysIron(currentPlayer, quantity);
+                out.println("You have successfully sold " + quantity + " iron. Now you have " + player.getIron());
+            } else {
+                out.println("You do not have enough iron to sell that quantity.");
+            }
+
+        } catch (NumberFormatException e) {
+            out.println("Invalid input. Please enter a valid number.");
+        }
+    }
+
+    private void sellWeaponToMarket(Player currentPlayer) throws IOException {
+
+        Market m = null;
+        boolean hasMarket = false;
+        for (Component component : currentPlayer.getComponents()) {
+            if (component instanceof Market) {
+                m = (Market) component;
+                hasMarket = true;
+                break;
+            }
+        }
+
+
+        if (!hasMarket) {
+            out.println("You must have a Market to sell weapons.");
+            return;
+        }
+
+
+        List<Weapon> weaponsToSell = currentPlayer.getWeapons();
+        if (weaponsToSell.isEmpty()) {
+            out.println("You don't have any weapons to sell.");
+            return;
+        }
+
+        out.println("Available weapons to sell:");
+        for (int i = 0; i < weaponsToSell.size(); i++) {
+            Weapon weapon = weaponsToSell.get(i);
+            out.println((i + 1) + ". " + weapon.getClass().getSimpleName());
+        }
+
+        out.println("Enter the number of the weapon you want to sell:");
+
+        try {
+            String input = in.readLine();
+            int choice = Integer.parseInt(input) - 1;
+
+            if (choice >= 0 && choice < weaponsToSell.size()) {
+                Weapon selectedWeapon = weaponsToSell.get(choice);
+                m.marketBuysWeapons(currentPlayer, selectedWeapon);
+                out.println("You have successfully sold the " + selectedWeapon.getClass().getSimpleName() + "!");
+            } else {
+                out.println("Invalid choice. No weapon was sold.");
+            }
+        } catch (NumberFormatException e) {
+            out.println("Invalid input. Please enter a valid number.");
+        }
+    }
+
+    private void initiateIronTrade(Player buyer) throws IOException {
+        Market m = null;
+        boolean hasMarket = false;
+        for (Component component : buyer.getComponents()) {
+            if (component instanceof Market) {
+                m = (Market) component;
+                hasMarket = true;
+                break;
+            }
+        }
+
+        if (!hasMarket) {
+            out.println("You must have a Market to trade iron.");
+            return;
+        }
+
+
+        out.println("Enter the username of the player you want to trade with:");
+
+        String targetUsername = in.readLine();
+        Player seller = getPlayerByUsername(targetUsername);
+
+        if (seller == null) {
+            out.println("Player not found.");
+            return;
+        }
+
+
+        out.println("Enter the quantity of iron you want to buy:");
+
+        String quantityInput = in.readLine();
+        int quantity = Integer.parseInt(quantityInput);
+
+
+        out.println("Enter the price you agree to pay for " + quantity + " iron:");
+
+        String priceInput = in.readLine();
+        int price = Integer.parseInt(priceInput);
+
+
+        m.playerTransactionIron(buyer, seller, quantity, price);
     }
 
 
