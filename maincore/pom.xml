@@ -14,4 +14,16 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <dependencies>
+        <!-- GraphStream -->
+        <dependency>
+            <groupId>org.danilopianini</groupId>
+            <artifactId>graphstream-gs-ui-swing</artifactId>
+            <version>2.0.0</version>
+        </dependency>
+    </dependencies>
+
+
+
+
 </project>

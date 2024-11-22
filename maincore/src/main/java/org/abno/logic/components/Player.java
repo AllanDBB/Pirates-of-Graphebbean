@@ -42,11 +42,6 @@ public class Player {
         graph.addEdge(energySource, connector);
         graph.addEdge(connector, market);
 
-        MaelStorm maelStorm1 = new MaelStorm();
-        placeComponent(maelStorm1, List.of(new Pair<>(19,19)));
-
-        MaelStorm maelStorm2 = new MaelStorm();
-        placeComponent(maelStorm2, List.of(new Pair<>(1,17)));
     }
 
     private void addComponentToGraph(Component component, List<Pair<Integer, Integer>> positions) {
@@ -117,6 +112,7 @@ public class Player {
         if (processShield(enemy, x, y)) return;
 
         destroyTarget(enemy, x, y);
+
         this.weapons.remove(canon);
     }
 
@@ -154,13 +150,18 @@ public class Player {
     }
 
     private void destroyTarget(Player enemy, int x, int y) {
+
         if (!isValidCell(x, y)) return;
-        Item target = enemy.seaGrid[x][y];
+
+        Item target = enemy.getSeaGrid()[x][y];
         if (target instanceof MaelStorm) {
             maelstormAttack();
-        } else if (target instanceof Component) {
+        }
+
+
+        if (target instanceof Component) {
             Component component = (Component) target;
-            enemy.seaGrid[x][y] = null;
+            enemy.getSeaGrid()[x][y] = null;
             if (isComponentCompletelyRemoved(component, enemy)) {
                 enemy.getGraph().removeNode(component);
                 enemy.getComponents().remove(component);

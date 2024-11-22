@@ -16,5 +16,10 @@
       <option name="name" value="JBoss Community repository" />
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="graphstream-repo" />
+      <option name="name" value="graphstream-repo" />
+      <option name="url" value="https://repo.graphstream-project.org/repository/maven2/" />
+    </remote-repository>
   </component>
 </project>

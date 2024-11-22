@@ -27,6 +27,8 @@ public class WitchTemple extends Component{
         for (int i = 0; i < 20; i++) {
             for (int j = 0; j < 20; j++) {
                 Item item = enemy.getSeaGrid()[i][j];
+                System.out.println(i);
+                System.out.println(j);
                 if (item instanceof Component) {
                     Component target = (Component) item;
 

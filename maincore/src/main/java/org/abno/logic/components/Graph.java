@@ -19,16 +19,21 @@ public class Graph {
     }
 
     public void addEdge(Component from, Component to) {
+        // Verificar que ambos nodos estén en el grafo
         if (!nodes.contains(from) || !nodes.contains(to)) {
             throw new IllegalArgumentException("Ambos nodos deben estar en el grafo.");
         }
+
+        // Evitar agregar conexiones duplicadas
         if (!adjacencyList.get(from).contains(to)) {
             adjacencyList.get(from).add(to);
         }
+
         if (!adjacencyList.get(to).contains(from)) {
             adjacencyList.get(to).add(from);
         }
     }
+
 
     public void removeNode(Component node) {
         List<Component> connections = adjacencyList.get(node);
@@ -61,4 +66,12 @@ public class Graph {
     public boolean areConnected(Component from, Component to) {
         return adjacencyList.getOrDefault(from, new ArrayList<>()).contains(to);
     }
+
+    public List<Component> getNodes() {
+        return nodes;
+    }
+
+
+
+
 }

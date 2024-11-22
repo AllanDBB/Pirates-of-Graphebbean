@@ -9,7 +9,7 @@ public class Mine extends Component{
         super();
         this.setPrice(1000);
         this.time = 60; // 1 min default pero es configurable
-        this.quantity = 50; // 50 kg de acero se fabrican por time, también configurable
+        this.quantity = 50000; // 50 kg de acero se fabrican por time, también configurable
     }
 
 

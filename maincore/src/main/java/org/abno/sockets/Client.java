@@ -1,6 +1,7 @@
 package org.abno.sockets;
 
 import org.abno.frames.gameFrames.ChatPanel;
+import org.abno.frames.gameFrames.GameFrame;
 import org.abno.frames.initFrame.InitFrame;
 
 import java.io.BufferedReader;
@@ -9,10 +10,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-import org.abno.logic.components.Connector;
-import org.abno.logic.components.EnergySource;
-import org.abno.logic.components.Market;
-import org.abno.logic.components.Player;
+import org.abno.logic.components.*;
 
 public class Client {
 
@@ -25,6 +23,7 @@ public class Client {
     private static Player player;
     private static String username;
     private static boolean ASF;
+    private static GraphFrame graphFrame;
 
     public static void send(String message){
         if (out != null){
@@ -115,6 +114,12 @@ public class Client {
             while ((input = console.readLine()) != null) {
                 if (username == null){
                     username = input;
+                }
+
+                if (input == "@ShowGraph"){
+                    System.out.println("aca estoy");
+                    graphFrame = new GraphFrame(player.getGraph());
+                    graphFrame.init(player);
                 }
 
                 if ("exit".equalsIgnoreCase(input)) {

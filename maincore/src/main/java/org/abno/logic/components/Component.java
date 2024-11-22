@@ -3,10 +3,11 @@ package org.abno.logic.components;
 import java.util.ArrayList;
 
 public abstract class Component extends Item {
-
+    private static int idCounter = 0;
+    private int id;
 
     Component() {
-
+        this.id = idCounter++;
     }
 
 
@@ -14,6 +15,28 @@ public abstract class Component extends Item {
         int x = coord.first;
         int y = coord.second;
         return x >= 0 && x < 20 && y >= 0 && y < 20;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public String toString() {
+        return "Component-" + id;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Component component = (Component) obj;
+        return id == component.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(id);
     }
 
 }

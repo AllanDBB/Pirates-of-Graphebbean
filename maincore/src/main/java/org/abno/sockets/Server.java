@@ -12,6 +12,10 @@ import java.util.*;
 import org.abno.logic.components.*;
 import org.abno.logic.enums.TypesOfItems;
 import org.abno.logic.enums.TypesOfWeapons;
+import org.abno.logic.weapons.Bomb;
+import org.abno.logic.weapons.Canon;
+import org.abno.logic.weapons.SuperCanon;
+import org.abno.logic.weapons.UltraCanon;
 
 public class Server {
 
@@ -184,6 +188,38 @@ class ClientHandler implements Runnable {
                 out.println("Saldo actual: " + String.valueOf(player.getMoney()));
             } else if (message.equalsIgnoreCase("@MyIron")) {
                 out.println("Acero actual: " + String.valueOf(player.getIron()));
+            } else if (message.equalsIgnoreCase("@MyWeapons")) {
+                for (Weapon w: player.getWeapons()){out.println(w.getClass());}
+            } else if (message.equalsIgnoreCase("@UseCannon")){
+                try {
+                    useCanonAction(player);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            } else if (message.equalsIgnoreCase("@UseSuperCannon")){
+                try {
+                    useSuperCanonAction(player);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            } else if (message.equalsIgnoreCase("@UseBomb")){
+                try {
+                    useBombAction(player);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            } else if (message.equalsIgnoreCase("@UseUltraCannon")){
+                try {
+                    useUltraCanonAction(player);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            } else if (message.equalsIgnoreCase("@BuyShip")){
+                try {
+                    buyShip(player);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
         else {
@@ -252,6 +288,7 @@ class ClientHandler implements Runnable {
             }
         }
     }
+
 
 
 
@@ -330,6 +367,22 @@ class ClientHandler implements Runnable {
     private void buyEnergySource(Player currentPlayer) throws IOException {
         boolean energySourceBought = false;
 
+        Market m = null;
+        boolean hasMarket = false;
+        for (Component component : currentPlayer.getComponents()) {
+            if (component instanceof Market) {
+                m = (Market) component;
+                hasMarket = true;
+                break;
+            }
+        }
+
+
+        if (!hasMarket) {
+            out.println("You must have a Market.");
+            return;
+        }
+
         out.println("Enter the coordinates x, y to place the Energy Source (2x2): 0-18");
         String input = in.readLine();
         try {
@@ -339,7 +392,7 @@ class ClientHandler implements Runnable {
 
             if (isValidPositionForEnergySource(currentPlayer, x, y)) {
 
-                EnergySource energySource = new EnergySource();
+                EnergySource energySource = (EnergySource) m.marketSells(player, TypesOfItems.ENERGYSOURCE);
                 List<Pair<Integer, Integer>> location = List.of(
                         new Pair<>(x, y),
                         new Pair<>(x + 1, y),
@@ -391,6 +444,22 @@ class ClientHandler implements Runnable {
     private void buyMarket(Player currentPlayer) throws IOException {
         boolean marketBought = false;
 
+        Market m = null;
+        boolean hasMarket = false;
+        for (Component component : currentPlayer.getComponents()) {
+            if (component instanceof Market) {
+                m = (Market) component;
+                hasMarket = true;
+                break;
+            }
+        }
+
+
+        if (!hasMarket) {
+            out.println("You must have a Market.");
+            return;
+        }
+
 
         out.println("Enter the coordinates x, y to place the Market (1x2): 0-20 y 0-19");
         String input = in.readLine();
@@ -400,7 +469,7 @@ class ClientHandler implements Runnable {
             int y = Integer.parseInt(parts[1].trim());
 
             if (isValidPositionForMarket(currentPlayer, x, y)) {
-                Market market = new Market();
+                Market market = (Market) m.marketSells(player, TypesOfItems.MARKET);
                 List<Pair<Integer, Integer>> location = List.of(
                         new Pair<>(x, y),
                         new Pair<>(x, y + 1)
@@ -450,16 +519,32 @@ class ClientHandler implements Runnable {
     private void buyTwoByOneComponent(Player currentPlayer, String componentType) throws IOException {
         boolean componentBought = false;
 
+        Market m = null;
+        boolean hasMarket = false;
+        for (Component component : currentPlayer.getComponents()) {
+            if (component instanceof Market) {
+                m = (Market) component;
+                hasMarket = true;
+                break;
+            }
+        }
+
+
+        if (!hasMarket) {
+            out.println("You must have a Market.");
+            return;
+        }
+
         Component component;
         switch (componentType.toLowerCase()) {
             case "mine":
-                component = new Mine();
+                component = (Component) m.marketSells(player, TypesOfItems.MINE);
                 break;
             case "witchtemple":
-                component = new WitchTemple();
+                component = (Component) m.marketSells(player, TypesOfItems.WITCHTEMPLE);
                 break;
             case "armory":
-                component = new Armory();
+                component = (Component) m.marketSells(player, TypesOfItems.ARMORY);
                 break;
             default:
                 out.println("Invalid component type.");
@@ -525,6 +610,23 @@ class ClientHandler implements Runnable {
     private void buyArmory(Player currentPlayer) throws IOException {
         boolean armoryBought = false;
 
+        Market m = null;
+        boolean hasMarket = false;
+        for (Component component : currentPlayer.getComponents()) {
+            if (component instanceof Market) {
+                m = (Market) component;
+                hasMarket = true;
+                break;
+            }
+        }
+
+
+        if (!hasMarket) {
+            out.println("You must have a Market.");
+            return;
+        }
+
+
         out.println("Enter the coordinates x, y to place the Armory (2x1): 0-19 y 0-20");
         String input = in.readLine();
         try {
@@ -533,7 +635,7 @@ class ClientHandler implements Runnable {
             int y = Integer.parseInt(parts[1].trim());
 
             if (isValidPositionForTwoByOne(currentPlayer, x, y)) {
-                Armory armory = new Armory();
+                Armory armory = (Armory) m.marketSells(player, TypesOfItems.ARMORY);
                 List<Pair<Integer, Integer>> location = List.of(
                         new Pair<>(x, y),
                         new Pair<>(x + 1, y)
@@ -1034,6 +1136,289 @@ class ClientHandler implements Runnable {
         m.playerTransactionWeapons(seller, buyer, selectedWeapon, price);
 
         out.println("You have successfully sold the " + selectedWeapon.getClass().getSimpleName() + " for " + price + " money.");
+    }
+
+    private void useCanonAction(Player currentPlayer) throws IOException {
+        Canon canonToUse = null;
+        for (Weapon weapon : currentPlayer.getWeapons()) {
+            if (weapon instanceof Canon) {
+                canonToUse = (Canon) weapon;
+                break;
+            }
+        }
+
+        if (canonToUse == null) {
+            out.println("You don't have any cannons to use.");
+            return;
+        }
+
+        out.println("Enter the username of the player you want to attack:");
+
+        String targetUsername = in.readLine();
+        Player enemy = getPlayerByUsername(targetUsername);
+
+        if (enemy == null) {
+            out.println("Player not found.");
+            return;
+        }
+
+
+        out.println("Enter the coordinates to attack (x, y):");
+
+        String input = in.readLine();
+        try {
+            String[] parts = input.split(",");
+            int x = Integer.parseInt(parts[0].trim());
+            int y = Integer.parseInt(parts[1].trim());
+
+
+            if (!isValidCell(x, y)) {
+                out.println("Invalid coordinates. Attack canceled.");
+                return;
+            }
+
+            currentPlayer.useCanon(enemy, x, y, canonToUse);
+            out.println("You fired a cannon at (" + x + ", " + y + ") on " + targetUsername + "'s board!");
+
+        } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+            out.println("Invalid input format. Please use 'x, y' format.");
+        }
+    }
+
+    private boolean isValidCell(int x, int y) {
+        return x >= 0 && x < 20 && y >= 0 && y < 20;
+    }
+
+    private void useSuperCanonAction(Player currentPlayer) throws IOException {
+
+        SuperCanon superCanonToUse = null;
+        for (Weapon weapon : currentPlayer.getWeapons()) {
+            if (weapon instanceof SuperCanon) {
+                superCanonToUse = (SuperCanon) weapon;
+                break;
+            }
+        }
+
+
+        if (superCanonToUse == null) {
+            out.println("You don't have any SuperCannons to use.");
+            return;
+        }
+
+
+        out.println("Enter the username of the player you want to attack:");
+
+        String targetUsername = in.readLine();
+        Player enemy = getPlayerByUsername(targetUsername);
+
+        if (enemy == null) {
+            out.println("Player not found.");
+            return;
+        }
+
+
+        out.println("Enter the coordinates to attack (x, y):");
+
+        String input = in.readLine();
+        try {
+            String[] parts = input.split(",");
+            int x = Integer.parseInt(parts[0].trim());
+            int y = Integer.parseInt(parts[1].trim());
+
+
+            if (!isValidCell(x, y)) {
+                out.println("Invalid coordinates. Attack canceled.");
+                return;
+            }
+
+            currentPlayer.useSuperCanon(enemy, x, y, superCanonToUse);
+            out.println("You fired a SuperCanon at (" + x + ", " + y + ") and four random locations on " + targetUsername + "'s board!");
+
+        } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+            out.println("Invalid input format. Please use 'x, y' format.");
+        }
+    }
+
+    private void useBombAction(Player currentPlayer) throws IOException {
+
+        Bomb bombToUse = null;
+        for (Weapon weapon : currentPlayer.getWeapons()) {
+            if (weapon instanceof Bomb) {
+                bombToUse = (Bomb) weapon;
+                break;
+            }
+        }
+
+
+        if (bombToUse == null) {
+            out.println("You don't have any bombs to use.");
+            return;
+        }
+
+
+        out.println("Enter the username of the player you want to attack:");
+
+        String targetUsername = in.readLine();
+        Player enemy = getPlayerByUsername(targetUsername);
+
+        if (enemy == null) {
+            out.println("Player not found.");
+            return;
+        }
+
+        out.println("Enter three coordinates to attack (format: x1,y1;x2,y2;x3,y3):");
+
+        String input = in.readLine();
+        try {
+            String[] coordinateSets = input.split(";");
+            if (coordinateSets.length != 3) {
+                out.println("You must provide exactly three coordinate sets. Attack canceled.");
+                return;
+            }
+
+
+            String[] coord1 = coordinateSets[0].split(",");
+            String[] coord2 = coordinateSets[1].split(",");
+            String[] coord3 = coordinateSets[2].split(",");
+
+            int x1 = Integer.parseInt(coord1[0].trim());
+            int y1 = Integer.parseInt(coord1[1].trim());
+            int x2 = Integer.parseInt(coord2[0].trim());
+            int y2 = Integer.parseInt(coord2[1].trim());
+            int x3 = Integer.parseInt(coord3[0].trim());
+            int y3 = Integer.parseInt(coord3[1].trim());
+
+
+            if (!isValidCell(x1, y1) || !isValidCell(x2, y2) || !isValidCell(x3, y3)) {
+                out.println("One or more coordinates are invalid. Attack canceled.");
+                return;
+            }
+
+
+            currentPlayer.useBomb(enemy, x1, y1, x2, y2, x3, y3, bombToUse);
+            out.println("You used a bomb at (" + x1 + "," + y1 + "), (" + x2 + "," + y2 + "), and (" + x3 + "," + y3 + ") on " + targetUsername + "'s board!");
+
+        } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+            out.println("Invalid input format. Please use 'x1,y1;x2,y2;x3,y3' format.");
+        }
+    }
+
+    private void useUltraCanonAction(Player currentPlayer) throws IOException {
+
+        UltraCanon ultraCanonToUse = null;
+        for (Weapon weapon : currentPlayer.getWeapons()) {
+            if (weapon instanceof UltraCanon) {
+                ultraCanonToUse = (UltraCanon) weapon;
+                break;
+            }
+        }
+
+
+        if (ultraCanonToUse == null) {
+            out.println("You don't have any UltraCannons to use.");
+            return;
+        }
+
+
+        out.println("Enter the username of the player you want to attack:");
+
+        String targetUsername = in.readLine();
+        Player enemy = getPlayerByUsername(targetUsername);
+
+        if (enemy == null) {
+            out.println("Player not found.");
+            return;
+        }
+
+
+        out.println("Enter up to 10 coordinates to attack (format: x1,y1;x2,y2;...):");
+
+        String input = in.readLine();
+        try {
+            String[] coordinateSets = input.split(";");
+            if (coordinateSets.length > 10) {
+                out.println("You can specify a maximum of 10 coordinates. Attack canceled.");
+                return;
+            }
+
+            List<Pair<Integer, Integer>> targets = new ArrayList<>();
+            for (String coordSet : coordinateSets) {
+                String[] parts = coordSet.split(",");
+                int x = Integer.parseInt(parts[0].trim());
+                int y = Integer.parseInt(parts[1].trim());
+
+                if (!isValidCell(x, y)) {
+                    out.println("Invalid coordinate: (" + x + "," + y + "). Attack canceled.");
+                    return;
+                }
+
+                targets.add(new Pair<>(x, y));
+            }
+
+
+            currentPlayer.useUltraCanon(enemy, targets, ultraCanonToUse);
+            out.println("You used an UltraCanon on " + targets.size() + " targets on " + targetUsername + "'s board!");
+
+        } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+            out.println("Invalid input format. Please use 'x1,y1;x2,y2;...' format.");
+        }
+    }
+
+    private void buyShip(Player currentPlayer) throws IOException {
+        Market m = new Market();
+        boolean hasMarket = false;
+        for (Component component : currentPlayer.getComponents()) {
+            if (component instanceof Market) {
+                m = (Market) component;
+                hasMarket = true;
+                break;
+            }
+        }
+
+        if (!hasMarket) {
+            out.println("You must have a Market to buy a ship.");
+            return;
+        }
+
+
+        Ship ship = (Ship)m.marketSells(currentPlayer, TypesOfItems.SHIP);
+        if (ship == null) {
+            out.println("You do not have enough money to buy a ship.");
+            return;
+        }
+
+        out.println("You have successfully bought a ship.");
+
+
+        out.println("Enter the username of the player to send the ship to:");
+        String targetUsername = in.readLine();
+        Player enemy = getPlayerByUsername(targetUsername);
+
+        if (enemy == null) {
+            out.println("Player not found. Ship purchase canceled.");
+            return;
+        }
+
+
+        out.println("Enter the coordinates (x, y) to inspect with the ship:");
+        String input = in.readLine();
+
+        try {
+            String[] parts = input.split(",");
+            int x = Integer.parseInt(parts[0].trim());
+            int y = Integer.parseInt(parts[1].trim());
+
+            if (x < 0 || x >= 20 || y < 0 || y >= 20) {
+                out.println("Invalid coordinates. Ship purchase canceled.");
+                return;
+            }
+
+            String info = ship.getInfo(enemy, x, y);
+            out.println(info);
+
+        } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+            out.println("Invalid input. Ship purchase canceled.");
+        }
     }
 
 }
