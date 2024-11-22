@@ -180,6 +180,7 @@ class ClientHandler implements Runnable {
             client.out.println("@SetChat");
         }
     }
+
     private void disconnect() {
         try {
             socket.close();
@@ -755,7 +756,6 @@ class ClientHandler implements Runnable {
 
         out.println("No WitchTemple found.");
     }
-
 
 }
 

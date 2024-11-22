@@ -18,6 +18,7 @@ public class LobbyFrame extends JFrame {
 
     private static GameFrame gameFrame;
 
+    public static GameFrame getGameFrame() {return gameFrame;}
     public LobbyFrame() {
         setTitle("Lobby");
         setSize(800, 600); // Tamaño de la ventana

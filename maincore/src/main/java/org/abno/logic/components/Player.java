@@ -19,7 +19,7 @@ public class Player {
     private int shield;
 
     public Player() {
-        this.money = 40000000;
+        this.money = 40000;
         this.components = new ArrayList<>();
         this.iron = 0;
         this.seaGrid = new Component[20][20];

@@ -23,10 +23,17 @@ public class Client {
     private static ChatPanel chat;
     private static InitFrame frame;
     private static Player player;
+    private static String username;
+    private static boolean ASF;
 
     public static void send(String message){
         if (out != null){
             out.println(message);
+
+            if (username == null){
+                username = message;
+            }
+
             System.out.println("Sent value: " + message);
         } else {
             System.out.println("Vea mi loco aquí no tiene que llegar, algo pasó");
@@ -41,6 +48,8 @@ public class Client {
         player = new Player();
         chat = frame.getChat();
         System.out.println(chat);
+        ASF = true;
+
     }
 
     public static void main(String[] args) {
@@ -55,20 +64,37 @@ public class Client {
             frame.Init();
 
 
+            Thread updateUserT = new Thread(()->{
+
+                while(ASF){
+                    try {
+                        updateUser();
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                }
+            });
+
+
+
             // Hilo para escuchar respuestas del servidor
             Thread listener = new Thread(() -> {
                 try {
+
                     String response;
                     while ((response = in.readLine()) != null) {
                         System.out.println(response);
 
-                        if (chat != null){
+                        if (chat != null && !response.startsWith("@")){
                             sendToClient(response);
                         }
 
                         if (response.equals("@SetChat")){
                             Thread.sleep(1);
                             initPlayer();
+                            updateUserT.start();
                         }
 
                         if (response.equals("@StartGame")){
@@ -87,6 +113,10 @@ public class Client {
 
             String input;
             while ((input = console.readLine()) != null) {
+                if (username == null){
+                    username = input;
+                }
+
                 if ("exit".equalsIgnoreCase(input)) {
                     System.out.println("Desconectando del servidor...");
                     break;
@@ -99,5 +129,9 @@ public class Client {
         } catch (IOException e) {
             System.err.println("No se pudo conectar al servidor: " + e.getMessage());
         }
+    }
+
+    private static void updateUser(){
+        frame.getLobbyFrame().getGameFrame().setPlayerInfo(username, player.getIron(), player.getMoney(), player);
     }
 }
