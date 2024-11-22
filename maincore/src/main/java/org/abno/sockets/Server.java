@@ -174,6 +174,12 @@ class ClientHandler implements Runnable {
                 } catch (IOException e) {
                     out.println("An error occurred while processing your request. Please try again.");
                 }
+            } else if (message.equalsIgnoreCase("@SellWeaponToPlayer")) {
+                try {
+                    sellWeaponToPlayer(player);
+                } catch (IOException e) {
+                    out.println("An error occurred while processing your request. Please try again.");
+                }
             }
         }
         else {
@@ -964,6 +970,66 @@ class ClientHandler implements Runnable {
         m.playerTransactionIron(buyer, seller, quantity, price);
     }
 
+    private void sellWeaponToPlayer(Player seller) throws IOException {
+        Market m = null;
+        boolean hasMarket = false;
+        for (Component component : seller.getComponents()) {
+            if (component instanceof Market) {
+                m = (Market) component;
+                hasMarket = true;
+                break;
+            }
+        }
+
+        if (!hasMarket) {
+            out.println("You must have a Market to sell weapons.");
+            return;
+        }
+
+        List<Weapon> weaponsToSell = seller.getWeapons();
+        if (weaponsToSell.isEmpty()) {
+            out.println("You don't have any weapons to sell.");
+            return;
+        }
+
+        out.println("Available weapons to sell:");
+        for (int i = 0; i < weaponsToSell.size(); i++) {
+            Weapon weapon = weaponsToSell.get(i);
+            out.println((i + 1) + ". " + weapon.getClass().getSimpleName());
+        }
+
+        out.println("Enter the number of the weapon you want to sell:");
+
+
+        String input = in.readLine();
+        int weaponIndex = Integer.parseInt(input) - 1;
+
+        if (weaponIndex < 0 || weaponIndex >= weaponsToSell.size()) {
+            out.println("Invalid weapon selection.");
+            return;
+        }
+
+        Weapon selectedWeapon = weaponsToSell.get(weaponIndex);
+
+        out.println("Enter the username of the buyer:");
+
+        String targetUsername = in.readLine();
+        Player buyer = getPlayerByUsername(targetUsername);
+
+        if (buyer == null) {
+            out.println("Buyer not found.");
+            return;
+        }
+
+
+        out.println("Enter the price for the weapon (" + selectedWeapon.getClass().getSimpleName() + "):");
+        String priceInput = in.readLine();
+        int price = Integer.parseInt(priceInput);
+
+        m.playerTransactionWeapons(seller, buyer, selectedWeapon, price);
+
+        out.println("You have successfully sold the " + selectedWeapon.getClass().getSimpleName() + " for " + price + " money.");
+    }
 
 }
 

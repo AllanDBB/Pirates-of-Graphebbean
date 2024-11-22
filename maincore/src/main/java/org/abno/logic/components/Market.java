@@ -81,20 +81,7 @@ public class Market extends Component{
             return null;
         }
     }
-
-    public void playerTransactionComponent(Player buyer, Player seller, Component component, int price, List<Pair<Integer, Integer>> location){
-        if (seller.getComponents().contains(component) && buyer.getMoney() >= price){
-
-            seller.getComponents().remove(component);
-            seller.getGraph().removeNode(component);
-            seller.setMoney(seller.getMoney() + price);
-
-            buyer.getComponents().add(component);
-            buyer.getGraph().addNode(component);
-            buyer.placeComponent(component, location);
-            buyer.setMoney(buyer.getMoney() - price);
-        }
-    }
+    
 
     public void playerTransactionIron(Player buyer, Player seller, int quantity, int price){
         if (seller.getIron() >= quantity && buyer.getMoney() >= price){
