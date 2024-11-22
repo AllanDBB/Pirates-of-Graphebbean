@@ -81,7 +81,7 @@ public class Market extends Component{
             return null;
         }
     }
-    
+
 
     public void playerTransactionIron(Player buyer, Player seller, int quantity, int price){
         if (seller.getIron() >= quantity && buyer.getMoney() >= price){

@@ -41,6 +41,12 @@ public class Player {
 
         graph.addEdge(energySource, connector);
         graph.addEdge(connector, market);
+
+        MaelStorm maelStorm1 = new MaelStorm();
+        placeComponent(maelStorm1, List.of(new Pair<>(19,19)));
+
+        MaelStorm maelStorm2 = new MaelStorm();
+        placeComponent(maelStorm2, List.of(new Pair<>(1,17)));
     }
 
     private void addComponentToGraph(Component component, List<Pair<Integer, Integer>> positions) {

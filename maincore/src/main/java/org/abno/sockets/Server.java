@@ -180,6 +180,10 @@ class ClientHandler implements Runnable {
                 } catch (IOException e) {
                     out.println("An error occurred while processing your request. Please try again.");
                 }
+            } else if (message.equalsIgnoreCase("@MyMoney")) {
+                out.println("Saldo actual: " + String.valueOf(player.getMoney()));
+            } else if (message.equalsIgnoreCase("@MyIron")) {
+                out.println("Acero actual: " + String.valueOf(player.getIron()));
             }
         }
         else {
