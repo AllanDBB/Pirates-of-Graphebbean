@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class WitchTemple extends Component{
     int time;
 
-    WitchTemple (){
+    public WitchTemple(){
         super();
         this.setPrice(2500);
         this.time = 300; //300 s, no configurable
@@ -14,21 +14,8 @@ public class WitchTemple extends Component{
 
     //random si shield o kraken
 
-    public void shield(ArrayList<Pair<Integer, Integer>> positions, Player player, int shots) { //falta lo del random pero como lo incorporo si debe recibir la lista de puntos a atacar
-
-        for (Pair<Integer, Integer> p : positions) {
-            int x = p.first;
-            int y = p.second;
-
-            if (isValidCell(x, y, player)) {
-                Shield shield = new Shield(x, y, shots);
-                ArrayList<Pair<Integer, Integer>> location = new ArrayList<>();
-                location.add(new Pair<>(x, y));
-
-                player.placeComponent(shield, location);
-
-            }
-        }
+    public void shield(Player player, int shots) {
+        player.setShield(shots);
     }
 
 

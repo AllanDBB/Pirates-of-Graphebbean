@@ -3,6 +3,7 @@ package org.abno.logic.components;
 import org.abno.logic.weapons.Bomb;
 import org.abno.logic.weapons.Canon;
 import org.abno.logic.weapons.SuperCanon;
+import org.abno.logic.weapons.UltraCanon;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,49 +16,46 @@ public class Player {
     private ArrayList<Component> components;
     private Item[][] seaGrid;
     private Graph graph;
-    private Shield[][] shields;
+    private int shield;
 
     public Player() {
-        this.money = 4000;
+        this.money = 40000000;
         this.components = new ArrayList<>();
         this.iron = 0;
-        this.seaGrid = new Item[20][20]; // Asegúrate de que Item esté definido
+        this.seaGrid = new Component[20][20];
         this.weapons = new ArrayList<>();
         this.graph = new Graph();
-        this.shields = new Shield[20][20];
+        this.shield = 0;
 
+        initializeComponents();
+    }
+
+    private void initializeComponents() {
         Market market = new Market();
         EnergySource energySource = new EnergySource();
         Connector connector = new Connector();
 
-        components.add(market);
-        components.add(energySource);
-        components.add(connector);
+        addComponentToGraph(market, List.of(new Pair<>(0, 1), new Pair<>(0, 2)));
+        addComponentToGraph(energySource, List.of(new Pair<>(5, 6), new Pair<>(5, 7), new Pair<>(4, 6), new Pair<>(4, 7)));
+        addComponentToGraph(connector, List.of(new Pair<>(4, 4)));
 
-        market.addConnection(connector);
-        energySource.addConnection(connector);
+        graph.addEdge(energySource, connector);
+        graph.addEdge(connector, market);
+    }
 
-        connector.addConnection(market);
-        connector.addConnection(energySource);
+    private void addComponentToGraph(Component component, List<Pair<Integer, Integer>> positions) {
+        placeComponent(component, positions);
+        component.setLocation(positions);
+        components.add(component);
+        graph.addNode(component);
+    }
 
-        ArrayList<Pair<Integer, Integer>> positionsEnergySource = new ArrayList<>();
-        positionsEnergySource.add(new Pair<>(5, 6));
-        positionsEnergySource.add(new Pair<>(5, 7));
-        positionsEnergySource.add(new Pair<>(4, 6));
-        positionsEnergySource.add(new Pair<>(4, 7));
-        placeComponent(energySource, positionsEnergySource);
-        energySource.setLocation(positionsEnergySource);
+    public int getShield() {
+        return shield;
+    }
 
-        ArrayList<Pair<Integer, Integer>> positionsMarket = new ArrayList<>();
-        positionsMarket.add(new Pair<>(0, 1));
-        positionsMarket.add(new Pair<>(0, 2));
-        placeComponent(market, positionsMarket);
-        market.setLocation(positionsMarket);
-
-        ArrayList<Pair<Integer, Integer>> positionsConnector = new ArrayList<>();
-        positionsConnector.add(new Pair<>(4, 4));
-        placeComponent(connector, positionsConnector);
-        connector.setLocation(positionsConnector);
+    public void setShield(int shield) {
+        this.shield = shield;
     }
 
     public Graph getGraph() {
@@ -92,220 +90,143 @@ public class Player {
         return weapons;
     }
 
-    public void placeComponent(Item component, ArrayList<Pair<Integer, Integer>> location) {
+    public void placeComponent(Item component, List<Pair<Integer, Integer>> location) {
         for (Pair<Integer, Integer> coord : location) {
             int x = coord.first;
             int y = coord.second;
             if (seaGrid[x][y] != null) {
-                throw new IllegalArgumentException("ocupada");
+                throw new IllegalArgumentException("Celda ocupada en (" + x + ", " + y + ")");
             }
         }
-
         for (Pair<Integer, Integer> coord : location) {
             seaGrid[coord.first][coord.second] = component;
         }
 
-        if (component instanceof Component){
-            graph.addNode((Component) component);}
+        component.setLocation(location);
     }
 
+
     public void useCanon(Player enemy, int x, int y, Canon canon) {
-        Item target = enemy.seaGrid[x][y];
+        if (!isValidCell(x, y) || !weapons.contains(canon)) return;
+        if (processShield(enemy, x, y)) return;
 
-        if (enemy.shields[x][y]!=null){
-            if (enemy.shields[x][y].shotsLeft <= 0){
-                enemy.shields[x][y] = null;
-            }
-            else{
-                enemy.shields[x][y].shotsLeft-=1;
-                return;
-            }
-        }
-
-        if (target instanceof MaelStorm){
-            maelstormAttack();
-        }
-
-        if (isValidCell(x,y) && target != null && weapons.contains(canon)){
-            if (target instanceof Component){
-                //enemy.graph.removeNode((Component) target);
-                enemy.seaGrid[x][y] = null;
-            }
-            }
-
+        destroyTarget(enemy, x, y);
         this.weapons.remove(canon);
     }
 
     public void useSuperCanon(Player enemy, int x, int y, SuperCanon superCanon) {
+        if (!weapons.contains(superCanon)) return;
+        if (processShield(enemy, x, y)) return;
+
+        destroyTarget(enemy, x, y);
         Random random = new Random();
-
-        if (!weapons.contains(superCanon)) {
-            return;
-        }
-
-        Item target = enemy.seaGrid[x][y];
-        processTarget(target, enemy, x, y);
-
         for (int i = 0; i < 4; i++) {
             int randX = random.nextInt(20);
             int randY = random.nextInt(20);
-            Item randomTarget = enemy.seaGrid[randX][randY];
-            processTarget(randomTarget, enemy, randX, randY);
+            destroyTarget(enemy, randX, randY);
         }
         this.weapons.remove(superCanon);
     }
 
-
-    private void processTarget(Item target, Player enemy, int x, int y) {
-
-        if (enemy.shields[x][y]!=null){
-            if (enemy.shields[x][y].shotsLeft <= 1){
-                enemy.shields[x][y] = null;
-            }
-            else{
-                enemy.shields[x][y].shotsLeft-=1;
-                return;
-            }
-        }
-
-        if (target instanceof MaelStorm) {
-            maelstormAttack();
-        }
-        if (target instanceof Component) {
-            //enemy.getGraph().removeNode((Component) target);
-            enemy.seaGrid[x][y] = null;
-        }
-    }
-
-
     public void useBomb(Player enemy, int x1, int y1, int x2, int y2, int x3, int y3, Bomb bomb) {
         Random random = new Random();
-
-        if (isValidCell(x1, y1)) {
-            applyBombEffect(enemy, x1, y1, random);
-        }
-
-        if (isValidCell(x2, y2)) {
-            applyBombEffect(enemy, x2, y2, random);
-        }
-
-        if (isValidCell(x3, y3)) {
-            applyBombEffect(enemy, x3, y3, random);
-        }
-
-        if (enemy.seaGrid[x1][y1] instanceof MaelStorm){
-            maelstormAttack();
-        }
-
-        if (enemy.seaGrid[x2][y2] instanceof MaelStorm){
-            maelstormAttack();
-        }
-
-        if (enemy.seaGrid[x3][y3] instanceof MaelStorm){
-            maelstormAttack();
-        }
-
+        applyBombEffect(enemy, x1, y1, random);
+        applyBombEffect(enemy, x2, y2, random);
+        applyBombEffect(enemy, x3, y3, random);
         this.weapons.remove(bomb);
     }
 
+    public void useUltraCanon(Player enemy, List<Pair<Integer, Integer>> targets, UltraCanon ultraCanon) {
+        if (targets.size() > 10 || !weapons.contains(ultraCanon)) return;
+        for (Pair<Integer, Integer> target : targets) {
+            int x = target.first;
+            int y = target.second;
+            if (processShield(enemy, x, y)) continue;
+            destroyTarget(enemy, x, y);
+        }
+        this.weapons.remove(ultraCanon);
+    }
+
+    private void destroyTarget(Player enemy, int x, int y) {
+        if (!isValidCell(x, y)) return;
+        Item target = enemy.seaGrid[x][y];
+        if (target instanceof MaelStorm) {
+            maelstormAttack();
+        } else if (target instanceof Component) {
+            Component component = (Component) target;
+            enemy.seaGrid[x][y] = null;
+            if (isComponentCompletelyRemoved(component, enemy)) {
+                enemy.getGraph().removeNode(component);
+                enemy.getComponents().remove(component);
+            }
+        }
+    }
+
+    private void applyBombEffect(Player enemy, int x, int y, Random random) {
+        if (!isValidCell(x, y)) return;
+        int direction = random.nextInt(2);
+        if (direction == 0) {
+            destroyTarget(enemy, x, y);
+            destroyTarget(enemy, x, y + 1);
+        } else {
+            destroyTarget(enemy, x, y);
+            destroyTarget(enemy, x + 1, y);
+        }
+    }
+
+    private boolean processShield(Player enemy, int x, int y) {
+        if (enemy.shield > 0){
+            enemy.shield--;
+            return true;
+        }
+        return false;
+    }
 
     private boolean isValidCell(int x, int y) {
         return x >= 0 && x < 20 && y >= 0 && y < 20;
     }
 
-
-    private void applyBombEffect(Player enemy, int x, int y, Random random) {
-        Item target = enemy.seaGrid[x][y];
-
-        if (target != null) {
-
-            int direction = random.nextInt(2);
-
-            if (direction == 0) {
-                destroyCell(enemy, x, y);
-                destroyCell(enemy, x, y + 1);
-            } else {
-                destroyCell(enemy, x, y);
-                destroyCell(enemy, x + 1, y);
-            }
+    private boolean isComponentCompletelyRemoved(Component component, Player enemy) {
+        for (Pair<Integer, Integer> coord : component.getLocation()) {
+            int x = coord.first;
+            int y = coord.second;
+            if (enemy.seaGrid[x][y] != null) return false;
         }
+        return true;
     }
 
-
-    private void destroyCell(Player enemy, int x, int y) {
-        if (isValidCell(x, y) && enemy.seaGrid[x][y] != null) {
-            Item target = enemy.seaGrid[x][y];
-
-            if (enemy.shields[x][y]!=null){
-                if (enemy.shields[x][y].shotsLeft <= 1){
-                    enemy.shields[x][y] = null;
-                }
-                else{
-                    enemy.shields[x][y].shotsLeft-=1;
-                    return;
-                }
-            }
-
-            if (target instanceof Component){
-                enemy.seaGrid[x][y] = null;}
-        }
-    }
-
-    public void useUltraCanon(Player enemy, List<Pair<Integer, Integer>> targets, Weapon ultraCanon){ //maximo 10
-        if (targets.size() > 10){
-            return;
-        }
-
-        for (Pair<Integer, Integer> target : targets){
-            int x = target.first;
-            int y = target.second;
-
-            if (enemy.seaGrid[x][y] instanceof MaelStorm){
-                maelstormAttack();
-            }
-
-            if (isValidCell(x, y)) {
-                Item component =  enemy.seaGrid[x][y];
-
-                if (enemy.shields[x][y]!=null){
-                    if (enemy.shields[x][y].shotsLeft <= 1){
-                        enemy.shields[x][y] = null;
-                    }
-                    else{
-                        enemy.shields[x][y].shotsLeft-=1;
-                        return;
-                    }
-                }
-
-                if (component != null && component instanceof Component){
-                    enemy.seaGrid[x][y] = null;
-                }
-            }
-
-        }
-
-
-
-        this.weapons.remove(ultraCanon);
-
-    }
-
-    private void maelstormAttack(){
+    private void maelstormAttack() {
         Random r = new Random();
-        for (int i = 0; i<3; i++){
-            int x = r.nextInt(20)+1;
-            int y = r.nextInt(20)+1;
-
-            if (this.getSeaGrid()[x][y] != null && this.getSeaGrid()[x][y] instanceof Component){
-                this.getGraph().removeNode((Component) this.seaGrid[x][y]);
-            }
+        for (int i = 0; i < 3; i++) {
+            int x = r.nextInt(20);
+            int y = r.nextInt(20);
+            destroyTarget(this, x, y);
         }
-
     }
 
-
-
-
+    public void printSeaGrid() {
+        for (int i = 0; i < seaGrid.length; i++) {
+            for (int j = 0; j < seaGrid[i].length; j++) {
+                Item item = seaGrid[i][j];
+                if (item instanceof EnergySource) {
+                    System.out.print("e ");
+                } else if (item instanceof Connector) {
+                    System.out.print("c ");
+                } else if (item instanceof Market) {
+                    System.out.print("m ");
+                } else if (item instanceof Mine) {
+                    System.out.print("f ");
+                } else if (item instanceof WitchTemple) {
+                    System.out.print("t ");
+                } else if (item instanceof Armory) {
+                    System.out.print("a ");
+                } else {
+                    System.out.print(". "); // Celda vacía
+                }
+            }
+            System.out.println(); // Nueva línea para cada fila
+        }
+    }
 
 
 }

@@ -10,7 +10,7 @@ public class Armory extends Component{
 
     TypesOfWeapons weapon;
 
-    Armory(){
+    public Armory(){
         super();
         this.setPrice(1500);
     }

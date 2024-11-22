@@ -2,19 +2,12 @@ package org.abno.logic.components;
 
 import java.util.ArrayList;
 
-public abstract class Component extends Item{
-    //cada componente, ya sean fuentes de energía, conectores, mercado, fábricas, armas , remolinos, barcos
-    //tienen un precio, una ubicación (los cuadros que ocupa en la matriz del jugador), sus conexiones
+public abstract class Component extends Item {
+    private ArrayList<Pair<Integer, Integer>> location;
 
-
-    private ArrayList<Component> connections; // No puede conectarse un componente a otro directamente, siempre debe haber un conector de por medio.
-
-
-    Component(){
-        connections = new ArrayList<>();
-
+    Component() {
+        location = new ArrayList<>();
     }
-
 
     public void placeComponent(ArrayList<Pair<Integer, Integer>> location) {
         for (Pair<Integer, Integer> coord : location) {
@@ -22,24 +15,16 @@ public abstract class Component extends Item{
                 throw new IllegalArgumentException("Ubicación inválida: " + coord);
             }
         }
-        this.setLocation(location);
+        this.location = location;
     }
 
     private boolean isValidLocation(Pair<Integer, Integer> coord) {
         int x = coord.first;
         int y = coord.second;
-        return x >= 0 && x < 20 && y >= 0 && y < 20; // Supone una matriz de 20x20.
+        return x >= 0 && x < 20 && y >= 0 && y < 20;
     }
 
-
-    public ArrayList<Component> getConnections() {
-        return connections;
+    public ArrayList<Pair<Integer, Integer>> getLocation() {
+        return location;
     }
-
-    public void addConnection(Component connector) {
-        if (connector instanceof Connector) {
-            connections.add(connector);
-        }
-    }
-
 }

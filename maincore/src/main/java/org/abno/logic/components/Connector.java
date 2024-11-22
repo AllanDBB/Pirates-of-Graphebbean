@@ -1,25 +1,15 @@
 package org.abno.logic.components;
 
-public class Connector extends Component{
+public class Connector extends Component {
 
-    public Connector(){
+    public Connector() {
         super();
         this.setPrice(100);
     }
 
-    public void addConnection(Component component){
-        if (!this.getConnections().contains(component)) {
-            this.getConnections().add(component);
-        }
-    }
-
-    public void removeConnection(Component component){
-        this.getConnections().remove(component);
-    }
-
-    public boolean isConnectedToEnergySource() {
-        for (Component c : this.getConnections()) {
-            if (c instanceof EnergySource) {
+    public boolean isConnectedToEnergySource(Graph graph) {
+        for (Component connected : graph.getConnections(this)) {
+            if (connected instanceof EnergySource) {
                 return true;
             }
         }

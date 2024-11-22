@@ -5,7 +5,7 @@ public class Mine extends Component{
     int time;
     int quantity;
 
-    Mine(){
+    public Mine(){
         super();
         this.setPrice(1000);
         this.time = 60; // 1 min default pero es configurable
@@ -13,8 +13,8 @@ public class Mine extends Component{
     }
 
 
-    public int mine (){
-        return quantity; //alternativamente void con un set del get + quantity
+    public void mine (Player player){
+        player.setIron(player.getIron()+quantity);
     }
 
     public int getTime() {
