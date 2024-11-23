@@ -1,6 +1,8 @@
 package org.abno.logic.components;
 
-public abstract class Weapon {
+import java.io.Serializable;
+
+public abstract class Weapon implements Serializable {
     private int iron;
 
     public int getIron() {

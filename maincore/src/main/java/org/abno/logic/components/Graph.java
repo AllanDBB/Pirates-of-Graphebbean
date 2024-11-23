@@ -1,8 +1,9 @@
 package org.abno.logic.components;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Graph {
+public class Graph implements Serializable {
     private List<Component> nodes;
     private Map<Component, List<Component>> adjacencyList;
 

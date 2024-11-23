@@ -5,11 +5,12 @@ import org.abno.logic.weapons.Canon;
 import org.abno.logic.weapons.SuperCanon;
 import org.abno.logic.weapons.UltraCanon;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Player {
+public class Player implements Serializable {
     private int money;
     private int iron;
     private ArrayList<Weapon> weapons;
@@ -17,6 +18,8 @@ public class Player {
     private Item[][] seaGrid;
     private Graph graph;
     private int shield;
+
+    private static final long serialVersionUID = 1L;
 
     public Player() {
         this.money = 40000;

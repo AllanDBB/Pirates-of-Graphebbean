@@ -4,6 +4,7 @@ import org.abno.logic.components.Player;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 public class GameFrame extends JFrame {
 
@@ -11,6 +12,7 @@ public class GameFrame extends JFrame {
     private static PlayerInfoPanel playerInfo;
     private static GameBoardPanel gameBoardPanel;
     private static Player player;
+    private static List<Player> players;
 
     public GameFrame() {
         setTitle("Pirates Of Graphebbean - Game");
@@ -50,14 +52,16 @@ public class GameFrame extends JFrame {
 
     public static ChatPanel getChat() { return chat; }
 
-    public static void setPlayerInfo(String username, int iron, int money, Player playerLoad){
+    public static void setPlayerInfo(String username, int iron, int money, Player playerLoad, List<Player> playersLoad){
         playerInfo.setUsername(username);
         playerInfo.setIron(String.valueOf(iron));
         playerInfo.setMoney(String.valueOf(money));
         player = playerLoad;
-
+        players = playersLoad;
         gameBoardPanel.setPlayer(player);
-        gameBoardPanel.updateSeaGrid();
+        gameBoardPanel.setOtherPlayers(players);
+        gameBoardPanel.updateSeaGrids();
+
         gameBoardPanel.repaint();
         playerInfo.repaint();
     }

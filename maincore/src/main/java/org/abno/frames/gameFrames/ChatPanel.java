@@ -22,7 +22,7 @@ public class ChatPanel extends JPanel {
         setBackground(new Color(30, 30, 30));
 
         // Área de chat
-        chatArea = new JTextArea(10, 20);
+        chatArea = new JTextArea(9, 19);
         chatArea.setEditable(false);
         chatArea.setLineWrap(true);
         chatArea.setWrapStyleWord(true);

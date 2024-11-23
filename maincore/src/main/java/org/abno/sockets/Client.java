@@ -4,11 +4,9 @@ import org.abno.frames.gameFrames.ChatPanel;
 import org.abno.frames.gameFrames.GameFrame;
 import org.abno.frames.initFrame.InitFrame;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
+import java.util.List;
 
 import org.abno.logic.components.*;
 
@@ -21,10 +19,13 @@ public class Client {
     private static ChatPanel chat;
     private static InitFrame frame;
     private static Player player;
+    private static List<Player> players;
     private static String username;
     private static boolean ASF;
     private static GraphFrame graphFrame;
 
+    public static Player getPlayer(){ return player; }
+    
     public static void send(String message){
         if (out != null){
             out.println(message);
@@ -68,7 +69,7 @@ public class Client {
                 while(ASF){
                     try {
                         updateUser();
-                        Thread.sleep(2000);
+                        Thread.sleep(5000);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
@@ -76,9 +77,25 @@ public class Client {
                 }
             });
 
+            Thread listenerObj = new Thread(() -> {
+                try {
+                    ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+                    while (true) {
+                        List<Player> receivedPlayers = (List<Player>) ois.readObject();
+                        players = receivedPlayers; // Almacena la lista de jugadores
+
+                        // Opcional: Puedes imprimir la lista para verificar su contenido
+                        System.out.println("Received players list:");
+                        for (Player player : players) {
+                            System.out.println(" Money: " + player.getMoney());
+                        }
+                    }
+                } catch (IOException | ClassNotFoundException e) {
+                    System.err.println("Error receiving data: " + e.getMessage());
+                }
+            });
 
 
-            // Hilo para escuchar respuestas del servidor
             Thread listener = new Thread(() -> {
                 try {
 
@@ -93,7 +110,9 @@ public class Client {
                         if (response.equals("@SetChat")){
                             Thread.sleep(1);
                             initPlayer();
+                            listenerObj.start();
                             updateUserT.start();
+
                         }
 
                         if (response.equals("@StartGame")){
@@ -109,6 +128,7 @@ public class Client {
             });
 
             listener.start();
+
 
             String input;
             while ((input = console.readLine()) != null) {
@@ -129,14 +149,26 @@ public class Client {
                 out.println(input);
             }
 
-            // Cerrar el socket después de salir
             socket.close();
         } catch (IOException e) {
             System.err.println("No se pudo conectar al servidor: " + e.getMessage());
         }
     }
 
-    private static void updateUser(){
-        frame.getLobbyFrame().getGameFrame().setPlayerInfo(username, player.getIron(), player.getMoney(), player);
+    private static void updateUser () {
+        send("@GetPlayerList");
+
+        // Comprobar si la lista de jugadores no es nula y tiene elementos
+        if (players != null && !players.isEmpty()) {
+            for (Player player : players) {
+                // Imprimir información de cada jugador para verificar
+                System.out.println("Money: " + player.getMoney() + ", Iron: " + player.getIron());
+            }
+        } else {
+            System.out.println("No players found or list is empty.");
+        }
+
+        // Actualizar la información del jugador en la interfaz de usuario
+        frame.getLobbyFrame().getGameFrame().setPlayerInfo(username, player.getIron(), player.getMoney(), player, players);
     }
 }

@@ -1,12 +1,10 @@
 package org.abno.sockets;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 import org.abno.logic.components.*;
@@ -224,6 +222,9 @@ class ClientHandler implements Runnable {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+            } else if (message.equalsIgnoreCase("@GetPlayerList")){
+                System.out.println("Requesting players list...");
+                sendPlayersList();
             }
         }
         else {
@@ -285,6 +286,16 @@ class ClientHandler implements Runnable {
 
     // here starts the game logic:
 
+    private void sendPlayersList() {
+        try {
+            List<Player> playerList = clients.stream().map(client -> client.player).collect(Collectors.toList());
+            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+            oos.writeObject(playerList);
+            oos.flush();
+        } catch (IOException e) {
+            System.err.println("Error sending players list: " + e.getMessage());
+        }
+    }
     private void startGame(){
         synchronized (clients){
             for (ClientHandler client : clients){

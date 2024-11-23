@@ -1,10 +1,11 @@
 package org.abno.logic.components;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public abstract class Component extends Item {
-    private static int idCounter = 0;
+public abstract class Component extends Item implements Serializable {
     private int id;
+    private static int idCounter = 0;
 
     Component() {
         this.id = idCounter++;
