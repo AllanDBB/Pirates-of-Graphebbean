@@ -22,7 +22,7 @@ public class Player {
         this.money = 40000;
         this.components = new ArrayList<>();
         this.iron = 0;
-        this.seaGrid = new Component[20][20];
+        this.seaGrid = new Item[20][20];
         this.weapons = new ArrayList<>();
         this.graph = new Graph();
         this.shield = 0;
@@ -42,6 +42,8 @@ public class Player {
         graph.addEdge(energySource, connector);
         graph.addEdge(connector, market);
 
+        this.getSeaGrid()[17][1] = new MaelStorm();
+        this.getSeaGrid()[0][19] = new MaelStorm();
     }
 
     private void addComponentToGraph(Component component, List<Pair<Integer, Integer>> positions) {
@@ -107,78 +109,96 @@ public class Player {
     }
 
 
-    public void useCanon(Player enemy, int x, int y, Canon canon) {
-        if (!isValidCell(x, y) || !weapons.contains(canon)) return;
-        if (processShield(enemy, x, y)) return;
+    public String useCanon(Player enemy, int x, int y, Canon canon) {
+        String s = "";
+        if (!isValidCell(x, y) || !weapons.contains(canon)) return s;
+        if (processShield(enemy, x, y)) return s;
 
-        destroyTarget(enemy, x, y);
+        String ans = destroyTarget(enemy, x, y);
+        s = s.concat(ans);
 
         this.weapons.remove(canon);
+
+        return s;
     }
 
-    public void useSuperCanon(Player enemy, int x, int y, SuperCanon superCanon) {
-        if (!weapons.contains(superCanon)) return;
-        if (processShield(enemy, x, y)) return;
+    public String useSuperCanon(Player enemy, int x, int y, SuperCanon superCanon) {
+        String s = "";
+        if (!weapons.contains(superCanon)) return s;
+        if (processShield(enemy, x, y)) return s;
 
-        destroyTarget(enemy, x, y);
+        s = s.concat(destroyTarget(enemy, x, y));
         Random random = new Random();
         for (int i = 0; i < 4; i++) {
             int randX = random.nextInt(20);
             int randY = random.nextInt(20);
-            destroyTarget(enemy, randX, randY);
+            s = s.concat(destroyTarget(enemy, randX, randY));
         }
         this.weapons.remove(superCanon);
+        return s;
     }
 
-    public void useBomb(Player enemy, int x1, int y1, int x2, int y2, int x3, int y3, Bomb bomb) {
+    public String useBomb(Player enemy, int x1, int y1, int x2, int y2, int x3, int y3, Bomb bomb) {
+        String s = "";
+
         Random random = new Random();
-        applyBombEffect(enemy, x1, y1, random);
-        applyBombEffect(enemy, x2, y2, random);
-        applyBombEffect(enemy, x3, y3, random);
+        s = s.concat(applyBombEffect(enemy, x1, y1, random));
+        s = s.concat(applyBombEffect(enemy, x2, y2, random));
+        s = s.concat(applyBombEffect(enemy, x3, y3, random));
         this.weapons.remove(bomb);
+        return s;
     }
 
-    public void useUltraCanon(Player enemy, List<Pair<Integer, Integer>> targets, UltraCanon ultraCanon) {
-        if (targets.size() > 10 || !weapons.contains(ultraCanon)) return;
+    public String useUltraCanon(Player enemy, List<Pair<Integer, Integer>> targets, UltraCanon ultraCanon) {
+        String s = "";
+        if (targets.size() > 10 || !weapons.contains(ultraCanon)) return s;
         for (Pair<Integer, Integer> target : targets) {
             int x = target.first;
             int y = target.second;
             if (processShield(enemy, x, y)) continue;
-            destroyTarget(enemy, x, y);
+            s = s.concat(destroyTarget(enemy, x, y));
         }
         this.weapons.remove(ultraCanon);
+        return s;
     }
 
-    private void destroyTarget(Player enemy, int x, int y) {
+    private String destroyTarget(Player enemy, int x, int y) {
+        String s = "";
 
-        if (!isValidCell(x, y)) return;
+        if (!isValidCell(x, y)) return s;
 
         Item target = enemy.getSeaGrid()[x][y];
         if (target instanceof MaelStorm) {
-            maelstormAttack();
+            s = s.concat("REMOLINO ENCONTRADO EN "+x +", " +y);
+            s = s.concat(maelstormAttack());
         }
 
 
         if (target instanceof Component) {
             Component component = (Component) target;
+            s = s.concat("ATAQUE EXITOSO EN  "+ x +", "+ y+ "  de "+component.getClass().getSimpleName());
             enemy.getSeaGrid()[x][y] = null;
             if (isComponentCompletelyRemoved(component, enemy)) {
+                s = s.concat("    BLANCO ELIMINADO TOTALMENTE");
                 enemy.getGraph().removeNode(component);
                 enemy.getComponents().remove(component);
             }
         }
+        return s;
     }
 
-    private void applyBombEffect(Player enemy, int x, int y, Random random) {
-        if (!isValidCell(x, y)) return;
+    private String applyBombEffect(Player enemy, int x, int y, Random random) {
+        String s = "";
+        if (!isValidCell(x, y)) return s;
         int direction = random.nextInt(2);
         if (direction == 0) {
-            destroyTarget(enemy, x, y);
-            destroyTarget(enemy, x, y + 1);
+            s = s.concat(destroyTarget(enemy, x, y));
+            s= s.concat(destroyTarget(enemy, x, y + 1));
         } else {
-            destroyTarget(enemy, x, y);
-            destroyTarget(enemy, x + 1, y);
+            s = s.concat(destroyTarget(enemy, x, y));
+            s = s.concat(destroyTarget(enemy, x + 1, y));
         }
+        return s;
     }
 
     private boolean processShield(Player enemy, int x, int y) {
@@ -202,13 +222,17 @@ public class Player {
         return true;
     }
 
-    private void maelstormAttack() {
+    private String maelstormAttack() {
+        String ret = " Remolino contraataca en: ";
         Random r = new Random();
         for (int i = 0; i < 3; i++) {
+
             int x = r.nextInt(20);
             int y = r.nextInt(20);
+            ret = ret.concat("   "+x+", "+y+"   ");
             destroyTarget(this, x, y);
         }
+        return ret;
     }
 
     public void printSeaGrid() {

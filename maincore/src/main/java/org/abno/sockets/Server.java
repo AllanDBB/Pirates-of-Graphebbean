@@ -192,25 +192,29 @@ class ClientHandler implements Runnable {
                 for (Weapon w: player.getWeapons()){out.println(w.getClass());}
             } else if (message.equalsIgnoreCase("@UseCannon")){
                 try {
-                    useCanonAction(player);
+                    String s = useCanonAction(player);
+                    broadcastToAll(s);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             } else if (message.equalsIgnoreCase("@UseSuperCannon")){
                 try {
-                    useSuperCanonAction(player);
+                    String s = useSuperCanonAction(player);
+                    broadcastToAll(s);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             } else if (message.equalsIgnoreCase("@UseBomb")){
                 try {
-                    useBombAction(player);
+                    String s = useBombAction(player);
+                    broadcastToAll(s);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             } else if (message.equalsIgnoreCase("@UseUltraCannon")){
                 try {
-                    useUltraCanonAction(player);
+                    String s = useUltraCanonAction(player);
+                    broadcastToAll(s);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -317,7 +321,7 @@ class ClientHandler implements Runnable {
                             currentPlayer.placeComponent(connector, location);
 
 
-                            currentPlayer.getComponents().add(connector);
+
                             currentPlayer.getGraph().addNode(connector);
 
 
@@ -393,6 +397,9 @@ class ClientHandler implements Runnable {
             if (isValidPositionForEnergySource(currentPlayer, x, y)) {
 
                 EnergySource energySource = (EnergySource) m.marketSells(player, TypesOfItems.ENERGYSOURCE);
+
+                if (energySource == null){return;}
+
                 List<Pair<Integer, Integer>> location = List.of(
                         new Pair<>(x, y),
                         new Pair<>(x + 1, y),
@@ -402,7 +409,7 @@ class ClientHandler implements Runnable {
                 currentPlayer.placeComponent(energySource, location);
 
 
-                currentPlayer.getComponents().add(energySource);
+
                 currentPlayer.getGraph().addNode(energySource);
                 out.println("Energy Source placed at (" + x + ", " + y + ").");
 
@@ -470,6 +477,9 @@ class ClientHandler implements Runnable {
 
             if (isValidPositionForMarket(currentPlayer, x, y)) {
                 Market market = (Market) m.marketSells(player, TypesOfItems.MARKET);
+
+                if (market == null){return;}
+
                 List<Pair<Integer, Integer>> location = List.of(
                         new Pair<>(x, y),
                         new Pair<>(x, y + 1)
@@ -551,6 +561,8 @@ class ClientHandler implements Runnable {
                 return;
         }
 
+        if (component == null){return;}
+
         out.println("Enter the coordinates x, y to place the " + componentType + " (2x1): 0-19 y 0-20");
         String input = in.readLine();
         try {
@@ -568,7 +580,6 @@ class ClientHandler implements Runnable {
                 currentPlayer.placeComponent(component, location);
 
 
-                currentPlayer.getComponents().add(component);
                 currentPlayer.getGraph().addNode(component);
                 out.println(componentType + " placed at (" + x + ", " + y + ").");
 
@@ -636,6 +647,9 @@ class ClientHandler implements Runnable {
 
             if (isValidPositionForTwoByOne(currentPlayer, x, y)) {
                 Armory armory = (Armory) m.marketSells(player, TypesOfItems.ARMORY);
+
+                if (armory == null){return;}
+
                 List<Pair<Integer, Integer>> location = List.of(
                         new Pair<>(x, y),
                         new Pair<>(x + 1, y)
@@ -651,7 +665,6 @@ class ClientHandler implements Runnable {
                 armory.setWeapon(chosenWeapon);
 
 
-                currentPlayer.getComponents().add(armory);
                 currentPlayer.getGraph().addNode(armory);
                 out.println("Armory placed at (" + x + ", " + y + "). It will produce " + chosenWeapon + ".");
 
@@ -783,7 +796,7 @@ class ClientHandler implements Runnable {
     private List<Component> getConnectors(Player player) {
         List<Component> connectors = new ArrayList<>();
         for (Component component : player.getComponents()) {
-            if (component instanceof Connector) {
+            if (component instanceof Connector && !connectors.contains(component)) {
                 connectors.add(component);
             }
         }
@@ -871,8 +884,9 @@ class ClientHandler implements Runnable {
                 if (action == 0) {
 
                     int shots = random.nextInt(4) + 2;
-                    witchTemple.shield(currentPlayer, shots);
+                    String s = witchTemple.shield(currentPlayer, shots);
                     out.println("Shield activated with " + shots + " shots.");
+                    broadcastToAll(s);
                 } else if (action == 1) {
 
                     out.println("Enter the target player's username for Kraken attack:");
@@ -882,6 +896,7 @@ class ClientHandler implements Runnable {
                     if (targetPlayer != null) {
                         witchTemple.kraken(targetPlayer);
                         out.println("Kraken unleashed on " + targetUsername + "'s components!");
+                        broadcastToAll("KRAKEN A "+ targetUsername);
                     } else {
                         out.println("Invalid target. Kraken attack cancelled.");
                     }
@@ -1138,7 +1153,8 @@ class ClientHandler implements Runnable {
         out.println("You have successfully sold the " + selectedWeapon.getClass().getSimpleName() + " for " + price + " money.");
     }
 
-    private void useCanonAction(Player currentPlayer) throws IOException {
+    private String useCanonAction(Player currentPlayer) throws IOException {
+        String s = "";
         Canon canonToUse = null;
         for (Weapon weapon : currentPlayer.getWeapons()) {
             if (weapon instanceof Canon) {
@@ -1149,7 +1165,7 @@ class ClientHandler implements Runnable {
 
         if (canonToUse == null) {
             out.println("You don't have any cannons to use.");
-            return;
+            return s;
         }
 
         out.println("Enter the username of the player you want to attack:");
@@ -1159,7 +1175,7 @@ class ClientHandler implements Runnable {
 
         if (enemy == null) {
             out.println("Player not found.");
-            return;
+            return s;
         }
 
 
@@ -1174,23 +1190,24 @@ class ClientHandler implements Runnable {
 
             if (!isValidCell(x, y)) {
                 out.println("Invalid coordinates. Attack canceled.");
-                return;
+                return s;
             }
 
-            currentPlayer.useCanon(enemy, x, y, canonToUse);
+            s = s.concat(currentPlayer.useCanon(enemy, x, y, canonToUse));
             out.println("You fired a cannon at (" + x + ", " + y + ") on " + targetUsername + "'s board!");
 
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
             out.println("Invalid input format. Please use 'x, y' format.");
         }
+        return s;
     }
 
     private boolean isValidCell(int x, int y) {
         return x >= 0 && x < 20 && y >= 0 && y < 20;
     }
 
-    private void useSuperCanonAction(Player currentPlayer) throws IOException {
-
+    private String useSuperCanonAction(Player currentPlayer) throws IOException {
+        String s = "";
         SuperCanon superCanonToUse = null;
         for (Weapon weapon : currentPlayer.getWeapons()) {
             if (weapon instanceof SuperCanon) {
@@ -1202,7 +1219,7 @@ class ClientHandler implements Runnable {
 
         if (superCanonToUse == null) {
             out.println("You don't have any SuperCannons to use.");
-            return;
+            return s;
         }
 
 
@@ -1213,7 +1230,7 @@ class ClientHandler implements Runnable {
 
         if (enemy == null) {
             out.println("Player not found.");
-            return;
+            return s;
         }
 
 
@@ -1228,19 +1245,20 @@ class ClientHandler implements Runnable {
 
             if (!isValidCell(x, y)) {
                 out.println("Invalid coordinates. Attack canceled.");
-                return;
+                return s;
             }
 
-            currentPlayer.useSuperCanon(enemy, x, y, superCanonToUse);
+            s = s.concat(currentPlayer.useSuperCanon(enemy, x, y, superCanonToUse));
             out.println("You fired a SuperCanon at (" + x + ", " + y + ") and four random locations on " + targetUsername + "'s board!");
 
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
             out.println("Invalid input format. Please use 'x, y' format.");
         }
+        return s;
     }
 
-    private void useBombAction(Player currentPlayer) throws IOException {
-
+    private String useBombAction(Player currentPlayer) throws IOException {
+        String s = "";
         Bomb bombToUse = null;
         for (Weapon weapon : currentPlayer.getWeapons()) {
             if (weapon instanceof Bomb) {
@@ -1252,7 +1270,7 @@ class ClientHandler implements Runnable {
 
         if (bombToUse == null) {
             out.println("You don't have any bombs to use.");
-            return;
+            return s;
         }
 
 
@@ -1263,7 +1281,7 @@ class ClientHandler implements Runnable {
 
         if (enemy == null) {
             out.println("Player not found.");
-            return;
+            return s;
         }
 
         out.println("Enter three coordinates to attack (format: x1,y1;x2,y2;x3,y3):");
@@ -1273,7 +1291,7 @@ class ClientHandler implements Runnable {
             String[] coordinateSets = input.split(";");
             if (coordinateSets.length != 3) {
                 out.println("You must provide exactly three coordinate sets. Attack canceled.");
-                return;
+                return s;
             }
 
 
@@ -1291,20 +1309,21 @@ class ClientHandler implements Runnable {
 
             if (!isValidCell(x1, y1) || !isValidCell(x2, y2) || !isValidCell(x3, y3)) {
                 out.println("One or more coordinates are invalid. Attack canceled.");
-                return;
+                return s;
             }
 
 
-            currentPlayer.useBomb(enemy, x1, y1, x2, y2, x3, y3, bombToUse);
+            s= s.concat(currentPlayer.useBomb(enemy, x1, y1, x2, y2, x3, y3, bombToUse));
             out.println("You used a bomb at (" + x1 + "," + y1 + "), (" + x2 + "," + y2 + "), and (" + x3 + "," + y3 + ") on " + targetUsername + "'s board!");
 
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
             out.println("Invalid input format. Please use 'x1,y1;x2,y2;x3,y3' format.");
         }
+        return s;
     }
 
-    private void useUltraCanonAction(Player currentPlayer) throws IOException {
-
+    private String useUltraCanonAction(Player currentPlayer) throws IOException {
+        String s = "";
         UltraCanon ultraCanonToUse = null;
         for (Weapon weapon : currentPlayer.getWeapons()) {
             if (weapon instanceof UltraCanon) {
@@ -1316,7 +1335,7 @@ class ClientHandler implements Runnable {
 
         if (ultraCanonToUse == null) {
             out.println("You don't have any UltraCannons to use.");
-            return;
+            return s;
         }
 
 
@@ -1327,7 +1346,7 @@ class ClientHandler implements Runnable {
 
         if (enemy == null) {
             out.println("Player not found.");
-            return;
+            return s;
         }
 
 
@@ -1338,7 +1357,7 @@ class ClientHandler implements Runnable {
             String[] coordinateSets = input.split(";");
             if (coordinateSets.length > 10) {
                 out.println("You can specify a maximum of 10 coordinates. Attack canceled.");
-                return;
+                return s;
             }
 
             List<Pair<Integer, Integer>> targets = new ArrayList<>();
@@ -1349,19 +1368,20 @@ class ClientHandler implements Runnable {
 
                 if (!isValidCell(x, y)) {
                     out.println("Invalid coordinate: (" + x + "," + y + "). Attack canceled.");
-                    return;
+                    return s;
                 }
 
                 targets.add(new Pair<>(x, y));
             }
 
 
-            currentPlayer.useUltraCanon(enemy, targets, ultraCanonToUse);
+            s = s.concat(currentPlayer.useUltraCanon(enemy, targets, ultraCanonToUse));
             out.println("You used an UltraCanon on " + targets.size() + " targets on " + targetUsername + "'s board!");
 
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
             out.println("Invalid input format. Please use 'x1,y1;x2,y2;...' format.");
         }
+        return s;
     }
 
     private void buyShip(Player currentPlayer) throws IOException {

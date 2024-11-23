@@ -14,8 +14,9 @@ public class WitchTemple extends Component{
 
     //random si shield o kraken
 
-    public void shield(Player player, int shots) {
+    public String shield(Player player, int shots) {
         player.setShield(shots);
+        return "ESCUDO ACTIVADO!";
     }
 
 
