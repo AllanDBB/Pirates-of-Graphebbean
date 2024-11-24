@@ -1,12 +1,21 @@
 package org.abno.frames.gameFrames;
 
-import javax.swing.*;
-import javax.swing.border.TitledBorder;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.border.TitledBorder;
 
 import static org.abno.sockets.Client.send;
 
@@ -22,6 +31,7 @@ public class ChatPanel extends JPanel {
         setBackground(new Color(30, 30, 30));
 
         // Área de chat
+        chatArea = new JTextArea(9, 19);
         chatArea = new JTextArea(9, 19);
         chatArea.setEditable(false);
         chatArea.setLineWrap(true);

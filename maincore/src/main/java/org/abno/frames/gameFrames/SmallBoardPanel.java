@@ -1,30 +1,17 @@
 package org.abno.frames.gameFrames;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Image;
+import org.abno.logic.components.*;
+
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-
+import java.util.ArrayList;
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
-import javax.swing.JPanel;
-import javax.swing.border.TitledBorder;
 
-import org.abno.logic.components.Armory;
-import org.abno.logic.components.Connector;
-import org.abno.logic.components.EnergySource;
-import org.abno.logic.components.Item;
-import org.abno.logic.components.Market;
-import org.abno.logic.components.Mine;
-import org.abno.logic.components.Player;
-import org.abno.logic.components.WitchTemple;
-
-public class GameBoardPanel extends JPanel {
-    private static final int TILE_SIZE = 24; // Tamaño de cada celda
+public class SmallBoardPanel extends JPanel {
+    private static final int TILE_SIZE = 7; // Tamaño de cada celda
     private static final int BOARD_SIZE = 20; // Tamaño del tablero (20x20)
     private static final int PADDING = 15; // Padding de 15 píxeles
     private Item[][] seaGrid; // Matriz que representa el estado del tablero
@@ -32,16 +19,16 @@ public class GameBoardPanel extends JPanel {
     private static Player player;
 
     public static void setPlayer(Player player) {
-        GameBoardPanel.player = player;
+        SmallBoardPanel.player = player;
     }
 
     public void updateSeaGrid() {
         seaGrid = player.getSeaGrid();
     }
 
-    public GameBoardPanel(Player player) {
+    public SmallBoardPanel(Player player) {
         setLayout(new BorderLayout());
-        setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), "Game Board", TitledBorder.CENTER, TitledBorder.TOP, new Font("Arial", Font.BOLD, 16), Color.WHITE));
+        setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), "Other Player", TitledBorder.CENTER, TitledBorder.TOP, new Font("Arial", Font.BOLD, 16), Color.WHITE));
         setBackground(new Color(30, 30, 30));
 
         // Ajustar el tamaño preferido para incluir el padding

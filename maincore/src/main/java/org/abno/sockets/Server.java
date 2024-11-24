@@ -1,13 +1,30 @@
 package org.abno.sockets;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
-
-import org.abno.logic.components.*;
+import org.abno.logic.components.Armory;
+import org.abno.logic.components.Component;
+import org.abno.logic.components.Connector;
+import org.abno.logic.components.EnergySource;
+import org.abno.logic.components.Item;
+import org.abno.logic.components.Market;
+import org.abno.logic.components.Mine;
+import org.abno.logic.components.Pair;
+import org.abno.logic.components.Player;
+import org.abno.logic.components.Ship;
+import org.abno.logic.components.Weapon;
+import org.abno.logic.components.WitchTemple;
 import org.abno.logic.enums.TypesOfItems;
 import org.abno.logic.enums.TypesOfWeapons;
 import org.abno.logic.weapons.Bomb;
@@ -21,7 +38,7 @@ public class Server {
     private static final int PORT = 8060;
     private static final List<ClientHandler> clients = Collections.synchronizedList(new ArrayList<>());
     static int currentTurnIndex = 0;
-
+    static boolean gameStarted = false;
 
     public static void main(String[] args) {
         System.out.println("Server starting...");
@@ -53,10 +70,6 @@ class ClientHandler implements Runnable {
     private List<ClientHandler> clients;
     private boolean isReady;
     private Player player;
-
-
-    // Game constants
-    private List<Player> players = new ArrayList<>();
 
     public ClientHandler(Socket socket, List<ClientHandler> clients) {
         this.socket = socket;
@@ -94,15 +107,33 @@ class ClientHandler implements Runnable {
         }
     }
 
+    private void changeTurn() {
+        Server.currentTurnIndex = (Server.currentTurnIndex + 1) % clients.size();
+        ClientHandler nextPlayer = clients.get(Server.currentTurnIndex);
+        broadcastToAll("Es el turno de " + nextPlayer.username + ".");
+        nextPlayer.out.println("Es tu turno.");
+
+        for (ClientHandler client : clients){
+            client.sendSeaGrids();
+            client.sendUserInfo();
+        }
+    }
 
     private void processMessage(String username, String message){
-        player.printSeaGrid();
+
+        if (message.equalsIgnoreCase("@Ready")) {
+            setReady();
+            out.println("You are ready!");
+        }
 
         if (message.startsWith("@")){
-            if (message.equalsIgnoreCase("@Ready")) {
-                setReady();
-                out.println("You are ready!");
-            } else if (message.equalsIgnoreCase("@BuyConnector")) {
+
+            if (Server.currentTurnIndex != clients.indexOf(this)) {
+                out.println("No es tu turno.");
+                return;
+            }
+
+            if (message.equalsIgnoreCase("@BuyConnector")) {
                 try {
                     buyConnector(player);
                 } catch (IOException e) {
@@ -222,9 +253,14 @@ class ClientHandler implements Runnable {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-            } else if (message.equalsIgnoreCase("@GetPlayerList")){
-                System.out.println("Requesting players list...");
-                sendPlayersList();
+            } else if (message.equalsIgnoreCase("@GetSeaGrids")){
+                sendSeaGrids();
+            } else if (message.equalsIgnoreCase("@GetUserInfo")){
+                sendUserInfo();
+            }
+            System.out.println(Server.gameStarted);
+            if (Server.gameStarted) {
+                changeTurn();
             }
         }
         else {
@@ -233,7 +269,44 @@ class ClientHandler implements Runnable {
     }
 
 
+    private void sendUserInfo(){
+        String allGrids = "@UserInfo ";
+        allGrids += "[" + player.getMoney() + "], ";
+        allGrids += "[" + player.getIron() + "], ";
 
+        Item[][] grid = player.getSeaGrid();
+
+        allGrids += "[";
+        for (int i = 0; i < grid.length; i++){
+            for (int j = 0; j < grid[i].length; j++){
+                Item temp = grid[i][j];
+
+                if (!(i == 0 && j == 0)) {
+                    allGrids += ", ";
+                }
+
+                if (temp instanceof EnergySource){
+                    allGrids += "E";
+                } else if (temp instanceof Connector){
+                    allGrids += "C";
+                } else if (temp instanceof Market){
+                    allGrids += "M";
+                } else if (temp instanceof Mine){
+                    allGrids += "m";
+                } else if (temp instanceof WitchTemple){
+                    allGrids += "T";
+                } else if (temp instanceof Armory){
+                    allGrids += "A";
+                } else{
+                    allGrids += "O";
+                }
+            }
+        }
+
+        allGrids += "]";
+        out.println(allGrids);
+
+    }
     private void setReady(){
         isReady = true;
         broadcast(username + (isReady ? " is ready!" : " is not ready."));
@@ -244,18 +317,66 @@ class ClientHandler implements Runnable {
         long readyCount = clients.stream().filter(client -> client.isReady).count();
         if (readyCount >= 2) {
             startGame();
-
-            enableChatForPlayers();
-
+            enableChatForPlayers(readyCount);
         }
     }
 
-    private void enableChatForPlayers(){
+    private void enableChatForPlayers(long readyCount){
         for (ClientHandler client : clients){
             client.out.println("@SetChat");
         }
+        sendActivePlayers();
     }
 
+    private void sendActivePlayers(){
+        int amount = clients.size();
+        for (ClientHandler client : clients){
+
+            client.out.println(amount);
+            System.out.println("Efectivamente lo envié");
+        }
+    }
+
+    private void sendSeaGrids(){
+        String allGrids = "@Matrix ";
+        for (ClientHandler client : clients){
+
+            if (client != this){
+                Item[][] grid = client.player.getSeaGrid();
+
+                allGrids += "[";
+
+                for (int i = 0; i < grid.length; i++){
+                    for (int j = 0; j < grid[i].length; j++){
+                        Item temp = grid[i][j];
+
+                        if (!(i == 0 && j == 0)) {
+                            allGrids += ", ";
+                        }
+
+                        if (temp instanceof EnergySource){
+                            allGrids += "E";
+                        } else if (temp instanceof Connector){
+                            allGrids += "C";
+                        } else if (temp instanceof Market){
+                            allGrids += "M";
+                        } else if (temp instanceof Mine){
+                            allGrids += "m";
+                        } else if (temp instanceof WitchTemple){
+                            allGrids += "T";
+                        } else if (temp instanceof Armory){
+                            allGrids += "A";
+                        } else{
+                            allGrids += "O";
+                        }
+                    }
+                }
+                allGrids += "], ";
+            }
+
+        }
+        out.println(allGrids);
+    }
     private void disconnect() {
         try {
             socket.close();
@@ -301,6 +422,10 @@ class ClientHandler implements Runnable {
             for (ClientHandler client : clients){
                 client.out.println("@StartGame");
             }
+            ClientHandler firstPlayer = clients.get(Server.currentTurnIndex);
+            broadcast("El juego ha comenzado. Es el turno de " + firstPlayer.username + ".");
+            firstPlayer.out.println("Es tu turno.");
+            Server.gameStarted = true;
         }
     }
 
