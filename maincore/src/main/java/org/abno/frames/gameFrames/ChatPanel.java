@@ -21,7 +21,6 @@ public class ChatPanel extends JPanel {
         setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), "Chat", TitledBorder.CENTER, TitledBorder.TOP, new Font("Arial", Font.BOLD, 16), Color.WHITE));
         setBackground(new Color(30, 30, 30));
 
-        // Área de chat
         chatArea = new JTextArea(9, 19);
         chatArea.setEditable(false);
         chatArea.setLineWrap(true);

@@ -30,6 +30,10 @@ public class Player {
         initializeComponents();
     }
 
+    public void setSeaGrid(Item[][] temp){
+        seaGrid = temp;
+    }
+
     private void initializeComponents() {
         Market market = new Market();
         EnergySource energySource = new EnergySource();

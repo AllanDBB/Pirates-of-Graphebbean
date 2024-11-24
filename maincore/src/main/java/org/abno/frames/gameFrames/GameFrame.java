@@ -4,6 +4,7 @@ import org.abno.logic.components.Player;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 public class GameFrame extends JFrame {
 
@@ -11,6 +12,7 @@ public class GameFrame extends JFrame {
     private static PlayerInfoPanel playerInfo;
     private static GameBoardPanel gameBoardPanel;
     private static Player player;
+    private static List<Player> otherPlayers;
 
     public GameFrame() {
         setTitle("Pirates Of Graphebbean - Game");
@@ -20,25 +22,15 @@ public class GameFrame extends JFrame {
         setLayout(new BorderLayout());
         getContentPane().setBackground(new Color(30, 30, 30));
 
-        // Crear el GameBoardPanel
         gameBoardPanel = new GameBoardPanel(player);
-
-        // Ajustar el tamaño preferido del GameBoardPanel
-        gameBoardPanel.setPreferredSize(new Dimension(600, 600)); // Tamaño más pequeño
-
-        // Agregar el GameBoardPanel al marco
+        gameBoardPanel.setPreferredSize(new Dimension(600, 600));
         add(gameBoardPanel, BorderLayout.CENTER);
 
-        // Panel de información del jugador
         playerInfo = new PlayerInfoPanel();
         add(playerInfo, BorderLayout.WEST);
 
-        // Panel de chat
-        ChatPanel chatPanel = new ChatPanel();
-        chat = chatPanel;
-        add(chatPanel, BorderLayout.SOUTH);
-
-
+        chat = new ChatPanel();
+        add(chat, BorderLayout.SOUTH);
     }
 
     public static void init() {
@@ -48,17 +40,21 @@ public class GameFrame extends JFrame {
         });
     }
 
-    public static ChatPanel getChat() { return chat; }
+    public static ChatPanel getChat() {
+        return chat;
+    }
 
-    public static void setPlayerInfo(String username, int iron, int money, Player playerLoad){
+    public static void setPlayerInfo(String username, int iron, int money, Player playerLoad, List<Player> otherPlayersLoad) {
         playerInfo.setUsername(username);
         playerInfo.setIron(String.valueOf(iron));
         playerInfo.setMoney(String.valueOf(money));
         player = playerLoad;
+        otherPlayers = otherPlayersLoad;
 
         gameBoardPanel.setPlayer(player);
         gameBoardPanel.updateSeaGrid();
         gameBoardPanel.repaint();
         playerInfo.repaint();
     }
+
 }

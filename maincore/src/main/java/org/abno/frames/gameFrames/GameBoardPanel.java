@@ -7,6 +7,7 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 public class GameBoardPanel extends JPanel {
@@ -14,6 +15,7 @@ public class GameBoardPanel extends JPanel {
     private static final int BOARD_SIZE = 20; // Tamaño del tablero (20x20)
     private static final int PADDING = 15; // Padding de 15 píxeles
     private Item[][] seaGrid; // Matriz que representa el estado del tablero
+
     private static Player player;
 
     public static void setPlayer(Player player) {
