@@ -97,7 +97,7 @@ public class Client {
                         }
 
                         if (response.equals("@SetChat")){
-                            Thread.sleep(1);
+                            Thread.sleep(1000);
                             initPlayer();
                             updateUserT.start();
                             activePlayers = Integer.parseInt(in.readLine());
@@ -114,6 +114,7 @@ public class Client {
 
                         if (response.startsWith("@Matrix")){
                             parseSeaGrids(response.substring(8).trim());
+                            updateUser();
                         }
 
                         if (response.startsWith("@UserInfo")){

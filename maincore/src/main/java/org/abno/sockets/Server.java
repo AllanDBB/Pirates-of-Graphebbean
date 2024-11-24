@@ -95,10 +95,13 @@ class ClientHandler implements Runnable {
     private void changeTurn() {
         Server.currentTurnIndex = (Server.currentTurnIndex + 1) % clients.size();
         ClientHandler nextPlayer = clients.get(Server.currentTurnIndex);
-        broadcast("Es el turno de " + nextPlayer.username + ".");
+        broadcastToAll("Es el turno de " + nextPlayer.username + ".");
         nextPlayer.out.println("Es tu turno.");
-        sendSeaGrids();
-        sendUserInfo();
+
+        for (ClientHandler client : clients){
+            client.sendSeaGrids();
+            client.sendUserInfo();
+        }
     }
 
     private void processMessage(String username, String message){
