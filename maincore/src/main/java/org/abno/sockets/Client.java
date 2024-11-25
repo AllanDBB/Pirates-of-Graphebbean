@@ -97,7 +97,7 @@ public class Client {
                         if (response.equals("@SetChat")){
                             Thread.sleep(1000);
                             initPlayer();
-                            listenerObj.start();
+                            //listenerObj.start();
                             updateUserT.start();
                             activePlayers = Integer.parseInt(in.readLine());
 
@@ -217,6 +217,9 @@ public class Client {
                         case "A":
                             seaGrid[i][j] = new Armory();
                             break;
+                        case "F":
+                            seaGrid[i][j] = new Fire();
+                            break;
                         case "O":
                         default:
                             seaGrid[i][j] = null; // O representa vacío
@@ -291,6 +294,8 @@ public class Client {
                 return new WitchTemple();
             case "A":
                 return new Armory();
+            case "F":
+                return new Fire();
             case "O":
             default:
                 return null;

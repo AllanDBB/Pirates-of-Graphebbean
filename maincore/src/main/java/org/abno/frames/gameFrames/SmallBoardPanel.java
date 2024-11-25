@@ -76,6 +76,8 @@ public class SmallBoardPanel extends JPanel {
         } else if (item instanceof Armory) {
             imagePath = BASE_PATH + "armeria.png";
             color = Color.LIGHT_GRAY; // Respaldo: gris claro
+        } else if (item instanceof Fire) {
+            color = Color.RED;
         }
 
         // Intenta dibujar la imagen si existe una ruta definida

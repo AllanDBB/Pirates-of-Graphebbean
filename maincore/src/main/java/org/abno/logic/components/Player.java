@@ -7,6 +7,7 @@ import org.abno.logic.weapons.UltraCanon;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -18,13 +19,14 @@ public class Player implements Serializable {
     private Item[][] seaGrid;
     private Graph graph;
     private int shield;
+    private Item [][] visibleGrid = new Item[20][20];
 
     private static final long serialVersionUID = 1L;
 
     public Player() {
         this.money = 40000;
         this.components = new ArrayList<>();
-        this.iron = 0;
+        this.iron = 40000;
         this.seaGrid = new Item[20][20];
         this.weapons = new ArrayList<>();
         this.graph = new Graph();
@@ -46,8 +48,8 @@ public class Player implements Serializable {
         addComponentToGraph(energySource, List.of(new Pair<>(5, 6), new Pair<>(5, 7), new Pair<>(4, 6), new Pair<>(4, 7)));
         addComponentToGraph(connector, List.of(new Pair<>(4, 4)));
 
-        graph.addEdge(energySource, connector);
-        graph.addEdge(connector, market);
+        this.graph.addEdge(energySource, connector);
+        this.graph.addEdge(connector, market);
 
         this.getSeaGrid()[17][1] = new MaelStorm();
         this.getSeaGrid()[0][19] = new MaelStorm();
@@ -57,7 +59,11 @@ public class Player implements Serializable {
         placeComponent(component, positions);
         component.setLocation(positions);
         components.add(component);
-        graph.addNode(component);
+        this.graph.addNode(component);
+    }
+
+    public Item[][] getVisibleGrid() {
+        return visibleGrid;
     }
 
     public int getShield() {
@@ -185,10 +191,27 @@ public class Player implements Serializable {
             Component component = (Component) target;
             s = s.concat("ATAQUE EXITOSO EN  "+ x +", "+ y+ "  de "+component.getClass().getSimpleName());
             enemy.getSeaGrid()[x][y] = null;
+            enemy.getVisibleGrid()[x][y] = new Fire();
+
+
             if (isComponentCompletelyRemoved(component, enemy)) {
                 s = s.concat("    BLANCO ELIMINADO TOTALMENTE");
                 enemy.getGraph().removeNode(component);
                 enemy.getComponents().remove(component);
+
+                if (component instanceof Connector || component instanceof EnergySource){
+                    for (Component c: enemy.getComponents()){
+                        System.out.println(c.getId());
+                        if (enemy.getGraph().isDisconnectedSubgraph(c.getId())){
+                            for (Pair<Integer, Integer> coord : c.getLocation()) {
+                                System.out.println(coord.first);
+                                System.out.println(coord.second);
+                                enemy.getVisibleGrid()[coord.first][coord.second] = component;
+                                System.out.println(enemy.getVisibleGrid()[coord.first][coord.second]);
+                            }
+                        }
+                    }
+                }
             }
         }
         return s;
@@ -209,8 +232,8 @@ public class Player implements Serializable {
     }
 
     private boolean processShield(Player enemy, int x, int y) {
-        if (enemy.shield > 0){
-            enemy.shield--;
+        if (enemy.getShield() > 0){
+            enemy.setShield(enemy.getShield()-1);
             return true;
         }
         return false;
@@ -266,6 +289,8 @@ public class Player implements Serializable {
             System.out.println(); // Nueva línea para cada fila
         }
     }
+
+
 
 
 }

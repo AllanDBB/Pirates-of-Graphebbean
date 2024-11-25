@@ -13,18 +13,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import org.abno.logic.components.Armory;
-import org.abno.logic.components.Component;
-import org.abno.logic.components.Connector;
-import org.abno.logic.components.EnergySource;
-import org.abno.logic.components.Item;
-import org.abno.logic.components.Market;
-import org.abno.logic.components.Mine;
-import org.abno.logic.components.Pair;
-import org.abno.logic.components.Player;
-import org.abno.logic.components.Ship;
-import org.abno.logic.components.Weapon;
-import org.abno.logic.components.WitchTemple;
+import org.abno.logic.components.*;
 import org.abno.logic.enums.TypesOfItems;
 import org.abno.logic.enums.TypesOfWeapons;
 import org.abno.logic.weapons.Bomb;
@@ -342,7 +331,7 @@ class ClientHandler implements Runnable {
         for (ClientHandler client : clients){
 
             if (client != this){
-                Item[][] grid = client.player.getSeaGrid();
+                Item[][] grid = client.player.getVisibleGrid();
 
                 allGrids += "[";
 
@@ -366,6 +355,8 @@ class ClientHandler implements Runnable {
                             allGrids += "T";
                         } else if (temp instanceof Armory){
                             allGrids += "A";
+                        } else if (temp instanceof Fire){
+                            allGrids += "F";
                         } else{
                             allGrids += "O";
                         }
