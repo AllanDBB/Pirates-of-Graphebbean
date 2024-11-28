@@ -65,7 +65,7 @@ public class GameBoardPanel extends JPanel {
 
     private void drawTile(Graphics g, Item item, int x, int y) {
         // Ruta base donde se encuentran las imágenes
-        final String BASE_PATH = "C:\\Users\\adbyb\\OneDrive\\Documentos\\GitHub\\Pirates-of-Graphebbean\\maincore\\assets\\";
+        final String BASE_PATH = "C:\\Users\\natal\\Desktop\\sage\\Pirates-of-Graphebbean\\maincore\\assets\\";
         // Imagen y color por defecto
         String imagePath = null;
         Color color = Color.BLUE; // Azul océano por defecto

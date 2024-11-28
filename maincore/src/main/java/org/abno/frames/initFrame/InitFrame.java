@@ -29,7 +29,7 @@ public class InitFrame extends JFrame {
         setResizable(false);
 
         try {
-            shipImage = ImageIO.read(new File("C:\\Users\\adbyb\\OneDrive\\Documentos\\GitHub\\Pirates-of-Graphebbean\\maincore\\assets\\initShip.png"));
+            shipImage = ImageIO.read(new File("C:\\Users\\natal\\Desktop\\sage\\Pirates-of-Graphebbean\\maincore\\assets\\initShip.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

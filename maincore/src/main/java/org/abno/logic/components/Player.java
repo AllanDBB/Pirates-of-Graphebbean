@@ -206,7 +206,8 @@ public class Player implements Serializable {
                             for (Pair<Integer, Integer> coord : c.getLocation()) {
                                 System.out.println(coord.first);
                                 System.out.println(coord.second);
-                                enemy.getVisibleGrid()[coord.first][coord.second] = c;
+                                if (!(enemy.getVisibleGrid()[coord.first][coord.second] instanceof Fire)){
+                                    enemy.getVisibleGrid()[coord.first][coord.second] = c;}
                                 System.out.println(enemy.getVisibleGrid()[coord.first][coord.second]);
                             }
                         }

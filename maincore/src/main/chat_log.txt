@@ -61,3 +61,112 @@
 [28:14:32] Es el turno de allan.
 [28:14:32] Es tu turno.
 [28:14:33] nati has disconnected.
+[28:14:40] allan
+[28:14:40] @Ready
+[28:14:40] You are ready!
+[28:14:40] No es tu turno.
+[28:14:40] Es el turno de allan.
+[28:14:40] Es tu turno.
+[28:14:41] @BuyWitchTemple
+[28:14:41] Enter the coordinates x, y to place the WitchTemple (2x1): 0-19 y 0-20
+[28:14:41] 2,17
+[28:14:41] WitchTemple placed at (2, 17).
+[28:14:41] Available connectors to connect:
+[28:14:41] 1. Connector
+[28:14:41] Enter the number of the connector to connect to:
+[28:14:41] 1
+[28:14:41] WitchTemple connected to Connector.
+[28:14:41] Es el turno de nati.
+[28:14:41] Es el turno de allan.
+[28:14:41] Es tu turno.
+[28:14:41] @WitchTempleRandom
+[28:14:41] Enter the target player's username for Kraken attack:
+[28:14:41] nati
+[28:14:41] Kraken unleashed on nati's components!
+[28:14:41] KRAKEN A nati
+[28:14:41] Es el turno de nati.
+[28:14:42] ATAQUE EXITOSO EN  2, 17  de WitchTemple
+[28:14:42] Es el turno de allan.
+[28:14:42] Es tu turno.
+[28:14:43] @WitchTempleRandom
+[28:14:43] Enter the target player's username for Kraken attack:
+[28:14:43] nati
+[28:14:43] Kraken unleashed on nati's components!
+[28:14:43] KRAKEN A nati
+[28:14:43] Es el turno de nati.
+[28:14:44] nati has disconnected.
+[28:14:49] allan
+[28:14:49] @Ready
+[28:14:49] You are ready!
+[28:14:49] No es tu turno.
+[28:14:49] Es el turno de allan.
+[28:14:49] Es tu turno.
+[28:14:49] @BuyArmory
+[28:14:49] Enter the coordinates x, y to place the Armory (2x1): 0-19 y 0-20
+[28:14:49] 10,10
+[28:14:49] Choose the type of weapon the Armory will produce:
+[28:14:49] 1. Canon (Cost: 500 Iron)
+[28:14:49] 2. Super Canon (Cost: 1000 Iron)
+[28:14:49] 3. Ultra Canon (Cost: 5000 Iron)
+[28:14:49] 4. Bomb (Cost: 2000 Iron)
+[28:14:49] Enter the number of your choice:
+[28:14:49] 4
+[28:14:49] Armory placed at (10, 10). It will produce BOMB.
+[28:14:49] Available connectors to connect:
+[28:14:49] 1. Connector
+[28:14:49] Enter the number of the connector to connect to:
+[28:14:49] 1
+[28:14:49] Armory connected to Connector.
+[28:14:49] Es el turno de nati.
+[28:14:54] allan
+[28:14:54] @Ready
+[28:14:54] You are ready!
+[28:14:54] No es tu turno.
+[28:14:54] Es el turno de allan.
+[28:14:54] Es tu turno.
+[28:14:54] @BuyArmory
+[28:14:54] Enter the coordinates x, y to place the Armory (2x1): 0-19 y 0-20
+[28:14:55] 10,10
+[28:14:55] Choose the type of weapon the Armory will produce:
+[28:14:55] 1. Canon (Cost: 500 Iron)
+[28:14:55] 2. Super Canon (Cost: 1000 Iron)
+[28:14:55] 3. Ultra Canon (Cost: 5000 Iron)
+[28:14:55] 4. Bomb (Cost: 2000 Iron)
+[28:14:55] Enter the number of your choice:
+[28:14:55] 1
+[28:14:55] Armory placed at (10, 10). It will produce CANON.
+[28:14:55] Available connectors to connect:
+[28:14:55] 1. Connector
+[28:14:55] Enter the number of the connector to connect to:
+[28:14:55] 1
+[28:14:55] Armory connected to Connector.
+[28:14:55] Es el turno de nati.
+[28:14:55] Es el turno de allan.
+[28:14:55] Es tu turno.
+[28:14:56] @ArmoryGenerate
+[28:14:56] Available Armories:
+[28:14:56] 1. Armory configured to generate: CANON
+[28:14:56] Enter the number of the Armory to activate:
+[28:14:56] 1
+[28:14:56] Weapon generated: Canon. Remaining Iron: 39500
+[28:14:56] Es el turno de nati.
+[28:14:56] ATAQUE EXITOSO EN  10, 10  de ArmoryATAQUE EXITOSO EN  4, 4  de Connector    BLANCO ELIMINADO TOTALMENTE
+[28:14:56] Es el turno de allan.
+[28:14:56] Es tu turno.
+[28:14:57] nati has disconnected.
+[28:14:58] allan
+[28:14:58] @Ready
+[28:14:58] You are ready!
+[28:14:58] No es tu turno.
+[28:14:59] Es el turno de allan.
+[28:14:59] Es tu turno.
+[28:14:59] @
+[28:14:59] Es el turno de nati.
+[28:14:59] Es el turno de allan.
+[28:14:59] Es tu turno.
+[28:14:59] @
+[28:14:59] Es el turno de nati.
+[28:15:00] ATAQUE EXITOSO EN  4, 6  de EnergySourceATAQUE EXITOSO EN  4, 7  de EnergySourceATAQUE EXITOSO EN  4, 4  de Connector    BLANCO ELIMINADO TOTALMENTE
+[28:15:00] Es el turno de allan.
+[28:15:00] Es tu turno.
+[28:15:00] nati has disconnected.
