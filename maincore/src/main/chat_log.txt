@@ -1,0 +1,63 @@
+[28:14:26] allan
+[28:14:26] @Ready
+[28:14:26] You are ready!
+[28:14:26] No es tu turno.
+[28:14:27] Es el turno de allan.
+[28:14:27] Es tu turno.
+[28:14:27] @BuyWitchTemple
+[28:14:27] Enter the coordinates x, y to place the WitchTemple (2x1): 0-19 y 0-20
+[28:14:27] 16,16
+[28:14:27] WitchTemple placed at (16, 16).
+[28:14:27] Available connectors to connect:
+[28:14:27] 1. Connector
+[28:14:27] Enter the number of the connector to connect to:
+[28:14:27] 1
+[28:14:27] WitchTemple connected to Connector.
+[28:14:27] Es el turno de nati.
+[28:14:28] Es el turno de allan.
+[28:14:28] Es tu turno.
+[28:14:28] @WitchTempleRandom
+[28:14:28] Shield activated with 5 shots.
+[28:14:28] ESCUDO ACTIVADO!
+[28:14:28] Es el turno de nati.
+[28:14:29] Es el turno de allan.
+[28:14:29] Es tu turno.
+[28:14:30] @SellIronToMarket
+[28:14:30] Enter the quantity of iron you want to sell:
+[28:14:30] 300
+[28:14:30] You have successfully sold 300 iron. Now you have 39700
+[28:14:30] Es el turno de nati.
+[28:14:30] 
+[28:14:30] Es el turno de allan.
+[28:14:30] Es tu turno.
+[28:14:30] @SellComponentToMarket
+[28:14:30] Available components to sell:
+[28:14:30] 1. Market - Price: 1000
+[28:14:30] 2. EnergySource - Price: 6000
+[28:14:30] 3. Connector - Price: 50
+[28:14:30] 4. WitchTemple - Price: 1250
+[28:14:30] Enter the number of the component you want to sell:
+[28:14:31] 4
+[28:14:31] You have successfully sold the WitchTemple!
+[28:14:31] Es el turno de nati.
+[28:14:31] 
+[28:14:31] Es el turno de allan.
+[28:14:31] Es tu turno.
+[28:14:32] @BuyWitchTemple
+[28:14:32] Enter the coordinates x, y to place the WitchTemple (2x1): 0-19 y 0-20
+[28:14:32] 10,10
+[28:14:32] WitchTemple placed at (10, 10).
+[28:14:32] Available connectors to connect:
+[28:14:32] 1. Connector
+[28:14:32] Enter the number of the connector to connect to:
+[28:14:32] 1
+[28:14:32] WitchTemple connected to Connector.
+[28:14:32] Es el turno de nati.
+[28:14:32] Es el turno de allan.
+[28:14:32] Es tu turno.
+[28:14:32] @
+[28:14:32] Es el turno de nati.
+[28:14:32] 
+[28:14:32] Es el turno de allan.
+[28:14:32] Es tu turno.
+[28:14:33] nati has disconnected.

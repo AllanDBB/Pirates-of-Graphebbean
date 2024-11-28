@@ -33,6 +33,20 @@ public class WitchTemple extends Component{
                 if (item instanceof Component) {
                     Component target = (Component) item;
 
+                    if (target instanceof Connector || target instanceof EnergySource){
+                        for (Component c: enemy.getComponents()){
+                            System.out.println(c.getId());
+                            if (enemy.getGraph().isDisconnectedSubgraph(c.getId())){
+                                for (Pair<Integer, Integer> coord : c.getLocation()) {
+                                    System.out.println(coord.first);
+                                    System.out.println(coord.second);
+                                    enemy.getVisibleGrid()[coord.first][coord.second] = c;
+                                    System.out.println(enemy.getVisibleGrid()[coord.first][coord.second]);
+                                }
+                            }
+                        }
+                    }
+
                     enemy.getGraph().removeNode(target);
                     enemy.getComponents().remove(target);
 

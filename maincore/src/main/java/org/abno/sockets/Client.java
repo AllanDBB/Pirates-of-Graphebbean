@@ -6,7 +6,9 @@ import org.abno.frames.initFrame.InitFrame;
 
 import java.io.*;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.abno.logic.components.*;
@@ -16,6 +18,7 @@ public class Client {
     private static final String SERVER_ADDRESS = "localhost";
     private static final int SERVER_PORT = 8060;
     private static PrintWriter out;
+    private static final String LOG_FILE_PATH = "maincore/src/main/chat_log.txt";
 
     private static ChatPanel chat;
     private static InitFrame frame;
@@ -28,6 +31,16 @@ public class Client {
 
     private static List<Player> otherPlayers = new ArrayList<>();
 
+    private static void logMessage(String message) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(LOG_FILE_PATH, true))) {
+            String timestamp = new SimpleDateFormat("dd:HH:mm").format(new Date());
+            writer.write("[" + timestamp + "] " + message);
+            writer.newLine(); // Nueva línea después de cada mensaje
+        } catch (IOException e) {
+            System.err.println("Error writing to log file: " + e.getMessage());
+        }
+    }
+
 
     public static void send(String message){
         if (out != null){
@@ -39,6 +52,7 @@ public class Client {
 
 
             System.out.println("Sent value: " + message);
+            logMessage(message);
         } else {
             System.out.println("Vea mi loco aquí no tiene que llegar, algo pasó");
         }
@@ -90,8 +104,10 @@ public class Client {
                     while ((response = in.readLine()) != null) {
                         System.out.println(response);
 
+
                         if (chat != null && !response.startsWith("@")){
                             sendToClient(response);
+                            logMessage(response);
                         }
 
                         if (response.equals("@SetChat")){
